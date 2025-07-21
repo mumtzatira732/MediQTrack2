@@ -1,0 +1,278 @@
+var min=9;
+var max=18;
+
+// increase Font Size
+function increaseFontSize() {
+   var p = document.getElementsByTagName('p');
+   for(i=0;i<p.length;i++) {
+      if(p[i].style.fontSize) {
+         var s = parseInt(p[i].style.fontSize.replace("px",""));
+      } else {
+         var s = 12;
+      }
+      if(s!=max) {
+         s = 18;
+      }
+      p[i].style.fontSize = s+"px"
+   }
+   var p = document.getElementsByTagName('span');
+   for(i=0;i<p.length;i++) {
+      if(p[i].style.fontSize) {
+         var s = parseInt(p[i].style.fontSize.replace("px",""));
+      } else {
+         var s = 12;
+      }
+      if(s!=max) {
+         s = 18;
+      }
+      p[i].style.fontSize = s+"px"
+   }
+   var p = document.getElementsByTagName('input');
+   for(i=0;i<p.length;i++) {
+      if(p[i].style.fontSize) {
+         var s = parseInt(p[i].style.fontSize.replace("px",""));
+      } else {
+         var s = 12;
+      }
+      if(s!=max) {
+         s = 18;
+      }
+      p[i].style.fontSize = s+"px"
+   }
+   var p = document.getElementsByTagName('a');
+   for(i=0;i<p.length;i++) {
+      if(p[i].style.fontSize) {
+         var s = parseInt(p[i].style.fontSize.replace("px",""));
+      } else {
+         var s = 12;
+      }
+      if(s!=max) {
+         s = 18;
+      }
+      p[i].style.fontSize = s+"px"
+   }
+   var p = document.getElementsByTagName('font');
+   for(i=0;i<p.length;i++) {
+      if(p[i].style.fontSize) {
+         var s = parseInt(p[i].style.fontSize.replace("px",""));
+      } else {
+         var s = 12;
+      }
+      if(s!=max) {
+         s = 18;
+      }
+      p[i].style.fontSize = s+"px"
+   }
+}
+
+// decrease font size
+function decreaseFontSize() {
+   var p = document.getElementsByTagName('p');
+   for(i=0;i<p.length;i++) {
+      if(p[i].style.fontSize) {
+         var s = parseInt(p[i].style.fontSize.replace("px",""));
+      } else {
+         var s = 12;
+      }
+      if(s!=min) {
+         s = 9;
+      }
+      p[i].style.fontSize = s+"px"
+   }   
+   var p = document.getElementsByTagName('span');
+   for(i=0;i<p.length;i++) {
+      if(p[i].style.fontSize) {
+         var s = parseInt(p[i].style.fontSize.replace("px",""));
+      } else {
+         var s = 12;
+      }
+      if(s!=min) {
+         s = 9;
+      }
+      p[i].style.fontSize = s+"px"
+   }
+   var p = document.getElementsByTagName('input');
+   for(i=0;i<p.length;i++) {
+      if(p[i].style.fontSize) {
+         var s = parseInt(p[i].style.fontSize.replace("px",""));
+      } else {
+         var s = 12;
+      }
+      if(s!=min) {
+         s = 9;
+      }
+      p[i].style.fontSize = s+"px"
+   }
+   var p = document.getElementsByTagName('a');
+   for(i=0;i<p.length;i++) {
+      if(p[i].style.fontSize) {
+         var s = parseInt(p[i].style.fontSize.replace("px",""));
+      } else {
+         var s = 12;
+      }
+      if(s!=min) {
+         s = 9;
+      }
+      p[i].style.fontSize = s+"px"
+   }
+   var p = document.getElementsByTagName('font');
+   for(i=0;i<p.length;i++) {
+      if(p[i].style.fontSize) {
+         var s = parseInt(p[i].style.fontSize.replace("px",""));
+      } else {
+         var s = 12;
+      }
+      if(s!=min) {
+         s = 9;
+      }
+      p[i].style.fontSize = s+"px"
+   }
+}
+
+
+// reset font size
+function resetFontSize() {
+   var p = document.getElementsByTagName('p');
+   for(i=0;i<p.length;i++) {
+      if(p[i].style.fontSize) {
+         var s = parseInt(p[i].style.fontSize.replace("px",""));
+      } else {
+         var s = 12;
+      }
+      if(s!=max) {
+         s = 12;
+      }else{
+	 s = 12;
+      }
+      p[i].style.fontSize = ""
+   }   
+   var p = document.getElementsByTagName('span');
+   for(i=0;i<p.length;i++) {
+      if(p[i].style.fontSize) {
+         var s = parseInt(p[i].style.fontSize.replace("px",""));
+      } else {
+         var s = 12;
+      }
+      if(s!=max) {
+         s = 12;
+      }else{
+	 s = 12;
+      }
+      p[i].style.fontSize = ""
+   }
+   var p = document.getElementsByTagName('input');
+   for(i=0;i<p.length;i++) {
+      if(p[i].style.fontSize) {
+         var s = parseInt(p[i].style.fontSize.replace("px",""));
+      } else {
+         var s = 12;
+      }
+      if(s!=max) {
+         s = 12;
+      }else{
+	 s = 12;
+      }
+      p[i].style.fontSize = ""
+   }
+   var p = document.getElementsByTagName('a');
+   for(i=0;i<p.length;i++) {
+      if(p[i].style.fontSize) {
+         var s = parseInt(p[i].style.fontSize.replace("px",""));
+      } else {
+         var s = 12;
+      }
+      if(s!=max) {
+         s = 12;
+      }else{
+	 s = 12;
+      }
+      p[i].style.fontSize = ""
+   }
+   var p = document.getElementsByTagName('font');
+   for(i=0;i<p.length;i++) {
+      if(p[i].style.fontSize) {
+         var s = parseInt(p[i].style.fontSize.replace("px",""));
+      } else {
+         var s = 12;
+      }
+      if(s!=max) {
+         s = 12;
+      }else{
+	 s = 12;
+      }
+      p[i].style.fontSize = ""
+   }
+}
+
+// change color
+function changeColor(color)
+{
+   var p = document.getElementsByTagName('p');
+   for(i=0;i<p.length;i++) {
+      p[i].style.color = color
+   }   
+   var p = document.getElementsByTagName('span');
+   for(i=0;i<p.length;i++) {
+      p[i].style.color = color
+   }
+   var p = document.getElementsByTagName('input');
+   for(i=0;i<p.length;i++) {
+      p[i].style.color = color
+   }
+   var p = document.getElementsByTagName('a');
+   for(i=0;i<p.length;i++) {
+      p[i].style.color = color
+   }
+   var p = document.getElementsByTagName('font');
+   for(i=0;i<p.length;i++) {
+      p[i].style.color = color
+   }
+}
+
+
+// set default color
+function defaultColor()
+{
+   var p = document.getElementsByTagName('p');
+   for(i=0;i<p.length;i++) {
+      p[i].style.color = ""
+      p[i].style.fontSize = ""
+   }   
+   var p = document.getElementsByTagName('span');
+   for(i=0;i<p.length;i++) {
+      p[i].style.color = ""
+      p[i].style.fontSize = ""
+   }
+   var p = document.getElementsByTagName('input');
+   for(i=0;i<p.length;i++) {
+      p[i].style.color = ""
+      p[i].style.fontSize = ""
+   }
+   var p = document.getElementsByTagName('a');
+   for(i=0;i<p.length;i++) {
+      p[i].style.color = ""
+      p[i].style.fontSize = ""
+   }
+   var p = document.getElementsByTagName('font');
+   for(i=0;i<p.length;i++) {
+      p[i].style.color = ""
+      p[i].style.fontSize = ""
+   }
+}
+
+function changeBackground(img)
+{
+	url = base_url()+'assets/themes/admin/images/cms/'+img;
+	
+	$('#body_web').css('background-image','url('+url+')');
+	$('#body_web').css('background-repeat','repeat');
+	$('#body_web').css('background-position','center top');
+	$('#body_web').css('background-attachment','fixed');
+	$('#body_web').css('background-color','#fff');
+	
+}
+
+function closeBlock()
+{
+	$('.qr-code').css('display','none');
+}

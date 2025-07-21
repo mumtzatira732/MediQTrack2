@@ -1,0 +1,180 @@
+/* GENERAL STYLES */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f9fbfd;
+    color: #333;
+}
+
+/* Sidebar Container */
+.sidebar {
+  width: 280px !important;  /* Increased width for better name fit */
+  background: linear-gradient(180deg, #5a9bd4, #3a78c0);
+  color: #e6f0ff;
+  border-radius: 0 20px 20px 0;
+  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Sidebar Brand */
+.sidebar-brand {
+  padding-top: 3rem !important;
+  padding-bottom: 3rem !important;
+}
+
+.sidebar-brand img {
+  height: 90px !important;
+  margin-top: 70px;       /* tambah ruang atas */
+  margin-bottom: 15px !important;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+
+.sidebar-brand div {
+  font-size: 1.1rem !important;    /* Slightly smaller font for better fit */
+  font-weight: 700 !important;
+  white-space: normal;              /* Allow text to wrap */
+  overflow-wrap: break-word;       /* Break long words */
+  text-align: center;               /* Center text */
+  padding: 0 10px;                  /* Horizontal padding */
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+}
+
+/* Navigation Items */
+.nav-item {
+  margin-bottom: 10px;
+}
+
+.nav-link {
+  color: #dbe9ff !important;
+  padding: 15px 20px !important;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-weight: 600;
+
+  white-space: nowrap;         /* Prevent wrapping */
+  overflow: hidden;            /* Hide overflow */
+  text-overflow: ellipsis;     /* Show ellipsis for overflow text */
+}
+
+.nav-link i {
+  font-size: 1.3rem;
+  width: 25px;
+  text-align: center;
+}
+
+/* Hover & Active */
+.nav-link:hover,
+.nav-item.active .nav-link {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  color: #fff !important;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+}
+
+/* Sidebar Divider */
+.sidebar-divider {
+  border-top: 1.5px solid rgba(255, 255, 255, 0.15);
+  margin: 1.5rem 0 !important;
+}
+
+/* LOGO & USERNAME IN SIDEBAR */
+.sidebar .brand-logo {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.sidebar .brand-logo img {
+    height: 60px;
+}
+
+.sidebar .brand-username {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* MAIN CONTENT */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.card .card-header {
+    background-color: #e3edfb;
+    font-weight: bold;
+    border-bottom: none;
+    border-radius: 15px 15px 0 0;
+}
+
+/* FORM INPUTS */
+.form-control {
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    padding: 0.6rem 0.75rem;
+}
+
+/* BUTTONS */
+.btn {
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #5a95dd;
+    border-color: #5a95dd;
+}
+
+.btn-primary:hover {
+    background-color: #467cc9;
+    border-color: #467cc9;
+}
+
+.btn-dark {
+    background-color: #343a40;
+    border-color: #343a40;
+}
+
+.btn-dark:hover {
+    background-color: #23272b;
+    border-color: #23272b;
+}
+
+/* ALERTS */
+.alert {
+    border-radius: 10px;
+}
+
+/* HEADER (optional logout area) */
+.header-right {
+    text-align: right;
+    padding-right: 1rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* SCROLLBAR (optional) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #b0c4de;
+    border-radius: 10px;
+}
+
+.card p {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+}
+
+.card i {
+    width: 20px;
+    text-align: center;
+}

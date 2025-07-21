@@ -1,0 +1,11 @@
+.sidebar {
+    width: 280px !important;
+}
+
+.sidebar .nav-link span {
+    font-size: 1.1rem; /* besarkan tulisan */
+}
+
+.sidebar .sidebar-brand-text {
+    font-size: 1.3rem; /* tulisan atas 'User Panel' */
+}

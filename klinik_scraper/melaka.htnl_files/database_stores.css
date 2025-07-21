@@ -1,0 +1,523 @@
+.ds_table{
+    width:1000px;
+	color: #555555;
+    font-weight: normal;
+    font-size: 12px; 
+
+}
+
+
+
+.ds_table td{
+	padding-right : 4px !important;
+	padding-bottom : 4px !important;
+}
+
+
+
+.fields_list_table{
+	border-width : 1px;
+	border-style : solid;
+	border-color : #4D898E;
+}
+
+.field_list_name_td , .field_list_key_td{
+	width : 150px;
+	text-align : center;
+	border-width : 1px;
+	border-style : solid;
+	border-color : #4D898E;
+	
+}
+
+.field_list_name_value_td{
+	border-right-width : 1px;
+	border-right-style : solid;
+	border-right-color : #4D898E;
+	padding-left : 5px !important;
+	padding-bottom : 5px !important;
+}
+
+.field_list_key_value_td{
+	padding-left : 5px !important;
+	padding-bottom : 5px !important;
+}	
+
+
+
+.fields_list_table td{
+	
+}
+
+
+
+.database_store_row_container
+{
+	width : 100%;
+	float : left;
+	padding : 10px;
+}
+
+
+.ds_view_container{
+	background-color: #F9F9F9;
+    border: 1px solid #CCCCCC;
+    display: block;        
+    line-height: normal;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    overflow: auto;
+	padding-left : 4px;
+}
+
+.ds_view_row_1{
+	width : 95%;
+}
+
+.ds_view_row_2{
+	width : 400px;
+	float : left;
+}
+
+.ds_view_row_3{
+	width : 265px;	
+	float : left;
+}
+
+.ds_view_row_4{
+	width : 200px;	
+	float : left;
+}
+
+
+
+.ds_view_row_5{
+	width : 160px;	
+	float : left;
+}
+
+
+.paging_div{
+	float : left;
+}
+
+
+.db_store_search_toolbar {		
+	border-color: #ccc;
+	border-style:solid;
+	border-top-width:1px;
+	border-bottom-width:1px;
+	padding: 5px;
+	margin: 10px 0;
+	font-size: 13px;
+	width : 100%;
+	overflow : auto;
+}
+	
+.db_store_current_search_word {
+	font-weight:bold;
+	color:#175057;
+}
+
+	
+.db_store_search_toolbar a {
+	padding: 5px;
+}
+	
+.db_store_search_toolbar a:hover {
+	color: #ffffff;
+    background-color: #bdbdbd;
+}
+
+.db_store_search_textbox{
+	width :300px;
+	padding: 5px;
+}
+
+.store_search_container{
+	padding : 3px;
+}
+
+
+.database_store_content_view_div {
+    float: left;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    white-space: normal;
+    width: 100%;
+}
+
+.database_store_grid_view_div{
+	width : 100%;
+	float : left;
+}
+
+#container_after_content{
+	width : 100%;
+	float: left;
+}	
+
+
+#filter_field_table{
+	border-color: #ccc;
+	border-style:solid;
+	border-width : 1px;
+	padding: 3px;
+	margin: 5px 0;
+	font-size: 13px;
+	width : 400px;
+	text-align : center;
+	
+}
+
+#filter_field_table td{
+	padding-bottom : 5px;
+	padding-right : 5px;
+}
+
+.hidden_table{
+	display : none;
+}
+
+
+
+table.view_page_list_table {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #FFFFFF;
+    width: 100%;
+    font-size: 12px;
+}
+
+table.view_page_list_table thead tr, 
+table.view_page_list_table tfoot tr {
+    background: url("../images/shine_bg.png") repeat-x scroll left center #E7E1CE;
+}
+
+table.view_page_list_table thead th, 
+table.view_page_list_table tfoot th {
+    background-color: rgba(0, 0, 0, 0);
+    color: #888888;
+    font-size: 12px;
+    font-weight: normal;
+    padding: 10px 10px;
+    text-align: left;
+}
+
+table.view_page_list_table thead th {
+    background-image: url("../images/arrow-unsorted.png");
+    background-position: right center;
+    background-repeat: no-repeat;
+    border-bottom: 1px solid #D9D3BD;
+    cursor: pointer;
+}
+
+table.view_page_list_table thead th.thin {
+    background-position: center center;
+}
+
+table.view_page_list_table thead th:hover {
+    color: #7B761E;
+    font-weight: bold;
+}
+
+table.view_page_list_table tfoot th {
+    border-top: 1px solid #D9D3BD;
+}
+
+table.view_page_list_table thead th.sorting_asc, table.view_page_list_table thead th.sorting_desc {
+    color: #7B761E;
+    font-weight: bold;
+}
+
+table.view_page_list_table thead th.sorting_asc {
+    background-image: url("../images/arrow-asc.png");
+}
+
+table.view_page_list_table thead th.sorting_desc {
+    background-image: url("../images/arrow-desc.png");
+}
+
+table.view_page_list_table td {
+    color: #555555;
+    padding: 10px 10px;
+    vertical-align: middle;
+}
+
+table.view_page_list_table tr:hover td {
+    background-color: #F5EBAB !important;
+    color: #444444;
+}
+
+table.view_page_list_table tr:hover td.sorting_1 {
+    background-color: #ECE19B;
+    color: #444444;
+}
+
+table.view_page_list_table tr:nth-child(even) td {
+    background: #f1eddf;
+}
+
+table.view_page_list_table .even td.sorting_1 {
+    background: none repeat scroll 0 0 #E5DFCB;
+}
+
+table.view_page_list_table .odd td.sorting_1 {
+    background: none repeat scroll 0 0 #ECE7D6;
+}
+
+table.view_page_list_table td.thin, 
+table.view_page_list_table th.thin {
+    padding-left: 3px;
+    padding-right: 3px;
+    text-align: center;
+    width: 20px;
+}
+
+table.view_page_list_table td.thin_50, table.view_page_list_table th.thin_50 {
+    padding-left: 8px;
+    padding-right: 3px;
+    width: 50px;
+}
+
+table.view_page_list_table .icon {
+    margin-right: 5px;
+}
+
+.dataTables_paginate .paginate_button:hover, 
+.dataTables_paginate .paginate_button.current {
+    background-color: #fff;
+    color: #666;
+}
+
+
+.search_store_view_container_div{
+	overflow: hidden;
+	padding: 10px 20px 10px 20px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	
+}
+
+.search_store_view_content_div{
+	padding-bottom : 14px;
+}
+
+.search_store_search_div{
+	padding-bottom : 14px;
+}
+
+.search_store_search_div input[type='text']{
+	width : 250px;
+}
+
+.search_store_search_div input[type='submit']{
+	margin-left : 5px;
+}	
+
+.block-setting-field {
+	overflow: hidden;
+	margin-bottom: 5px;
+}
+
+.block-setting-col1 {
+	width:19%;
+	float:left;
+	margin-right: 5px;
+}
+
+.block-setting-col2 {
+	width:80%;
+	float:left;
+}
+
+
+/* ---------- upload area --------------- */
+
+#upload-dropbox {
+    padding: 100px 20px;
+    min-height: 250px;
+    max-width: 100%;
+    background-color: #eee;
+    border: 2px dashed #bbb;
+}
+
+#upload-dropbox label {
+    text-align: center;
+    font-size: 17px;
+    position: relative;
+}
+
+#select-file {
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#select-file:hover {
+    text-decoration: underline;
+}
+
+#file-upload {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+}
+
+.box__icon {
+    width: 100%;
+    height: 80px;
+    fill: #bbbbbb;
+    display: block;
+    margin-bottom: 40px;
+}
+
+#upload-filename {
+    max-width: 350px;
+    margin: 0 auto;
+}
+
+#upload-filename .fa-times {
+    float: right;
+        line-height: 23px;
+    display: inline-block;
+    cursor: pointer;
+}
+    
+#upload-filename > p {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #f1f1f1;
+    font-size: 14px;
+    -webkit-box-shadow: 0 5px 10px -8px #222;
+     -moz-box-shadow: 0 5px 10px -8px #222;
+          box-shadow: 0 5px 10px -8px #222;
+}
+/* ---------- end upload area --------------- */
+
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #222;
+    z-index: 2;
+    opacity: 0.8;
+}
+
+#loading-overlay > svg {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 200px;
+    height: 200px;
+}
+
+/* ------------ data search field ----------------*/
+
+.search-field {
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    max-height: 400px;
+    overflow: auto;
+}
+
+.search-field ul.search-row {
+    list-style: none;
+    margin: 0;
+    padding: 0px;
+}
+
+.search-field ul.search-row > li {
+    padding: 5px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+/* ------------ end data search field ----------------*/
+
+/*-----------store view add additional search field css --------------------*/
+.customize-field-container .search-row{
+    padding: 10px;
+    position: relative;
+}
+
+.customize-field-container .search-row:hover {
+    background-color: #EFEFEF;
+}
+
+.customize-field-container .row-config{
+	display:none;
+	position: absolute;
+    top: 10px;
+    right: 10px;	
+}
+
+.customize-field-container .row-config .r-form-edit , .customize-field-container .row-config .r-form-del{
+	padding: 5px;	
+}
+
+.customize-field-container .search-row:hover .row-config{
+	display:block;
+}
+
+.customize-field-container .row-label{
+    color: #4D898E;
+    font-size: 14px;
+    margin-top: 0px;
+    margin-bottom: 5px;
+	padding-right:5px;
+}
+
+.customize-field-container .row-label label{
+	display:inline-block;
+}
+
+.customize-field-container .row-label , .customize-field-container .row-field{
+	display:inline-block;
+}
+
+.add-search-field{
+	background: #45ac38;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+}
+
+.add-search-field:hover{
+	background: #e03838;
+}
+
+.row-search label{
+	width: 100px;
+    float: left;
+}
+
+.row-search{
+	padding:3px;
+}
+/*-----------------store view add additional search field css----------------*/
+
+.sub {
+	padding-left: 20px !important;
+}
+
+.form-success-msg{
+	padding: 20px;
+}
+
+.form-success-msg h2{
+	font-style: italic;
+}
+
+.field-move{
+	cursor:move;
+}

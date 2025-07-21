@@ -1,0 +1,68 @@
+$(document).ready(function(){
+
+	$(".cbox950_plain").colorbox({
+		width:"950px",
+		height:"95%",
+		iframe:true
+	});
+
+	$(".cbox700").colorbox({
+		width:"700px",
+		height:"460",
+		iframe:true,
+		onClosed:function(){ location.reload(); }
+	});
+
+	$(".cbox600").colorbox({
+		width:"600px",
+		height:"95%",
+		iframe:true
+	});
+
+	$(".cbox950").colorbox({
+		width:"950px",
+		height:"95%",
+		iframe:true
+	});
+	
+	$(".cbox950_refresh").colorbox({width:"950px",
+						height:"95%",
+						iframe:true,
+						onClosed:function(){ location.reload(true); }
+	});
+	
+	$(".cbox600_plain").colorbox({
+		width:"600px",
+		height:"95%",
+		iframe:true
+	});
+
+	// check on() method is existed, because on() method is not exist in 1.7 below
+	if( jQuery.isFunction(jQuery.fn.on) )
+	{
+		$("body").on('click','.permission_popup',function(){
+			$(this).colorbox({
+				width:"700px",
+				height:"90%",
+				iframe:true
+			});
+		});
+	}
+	else
+	{
+		$(".permission_popup").live('click',function(){
+			$(this).colorbox({
+				width:"700px",
+				height:"90%",
+				iframe:true
+			});
+		});
+	}
+
+	
+});
+
+//added by shero 20171113 to use in frontend
+function setColorboxTitle(title){
+	$("#cboxTitle", top.document).html(title);
+}

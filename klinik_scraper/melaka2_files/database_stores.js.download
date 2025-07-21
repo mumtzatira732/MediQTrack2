@@ -1,0 +1,886 @@
+$(document).ready(function() {
+
+	$(".cbox_900").colorbox({
+		width:"900px",
+		height:"95%",
+		iframe:true
+	});
+
+	$(".cbox_700").colorbox({
+		width:"700px",
+		height:"95%",
+		iframe:true
+	});
+
+    if(jQuery().DataTable) {
+
+        var tableViewList = $('.ajax-table-view-list').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "order": [],
+            "paging": true,
+            "pageLength": 25,
+            "ajax": {
+                'url': site_url('database_stores/load_store_view_list'),
+                'type': 'POST',
+                'data': function(d) {
+                    d.id = get_segment(3) || 'omg'
+                }
+            },
+            "language": {
+               "loadingRecords": "<div class='loading'></div>",
+               "processing": "<div class='loading'></div>",
+            },
+            "columnDefs": [
+                { "orderable": false, "targets": [ 'sort_none' ] },
+                { "className": "thin", "targets": [ 'thin' ] }
+            ],
+            "initComplete": function() {
+
+                $(".cbox_700").colorbox({
+                    width:"700px",
+                    height:"95%",
+                    iframe:true
+                });
+            }
+        });
+    }
+
+//	var tableViewList = $('.ajax-table-view-list').dataTable({
+//		"bAutoWidth": false,
+//		"bJQueryUI": false,
+//		"bSort": true,
+//		"aaSorting": [],
+//		"iDisplayLength": 25,
+//		"sPaginationType": "full_numbers",
+//		"bStateSave": true,
+//		"bLengthChange": true,
+//		"bFilter": true,
+//		"bProcessing": true,
+//		"bServerSide": true,
+//        "sAjaxSource": site_url("database_stores/load_store_view_list"),
+//		"sServerMethod": "POST",
+//		"oLanguage": {
+//		  "sLoadingRecords": "<div class='loading'></div>",
+//		  "sProcessing": "<div class='loading'></div>",
+//		},
+//		"fnServerParams": function ( aoData ) {
+//			var id = $(this).attr('id');
+//			aoData.push( { "name": "id", "value": id } );
+//		},
+//		"aoColumnDefs": [
+//			{ "bSortable": false, "aTargets": [ 'sort_none' ] },
+//			{  "sClass": "thin", "aTargets": [ 2,3,4,5,6,7 ] }
+//		],
+//		"fnInitComplete": function() {
+//
+//			$(".cbox_700").colorbox({
+//				width:"700px",
+//				height:"95%",
+//				iframe:true
+//			});
+//			datatable_action_button(tableViewList);
+//		}
+//	});
+
+//	var tableDataList = $('.ajax-table-data-list').dataTable({
+//		"bAutoWidth": false,
+//		"bJQueryUI": false,
+//		"bSort": true,
+//		"aaSorting": [],
+//		"iDisplayLength": 25,
+//		"sPaginationType": "full_numbers",
+//		"bStateSave": true,
+//		"bLengthChange": true,
+//		"bFilter": true,
+//		"bProcessing": true,
+//		"bServerSide": true,
+//        "sAjaxSource": site_url("database_stores/load_datas"),
+//		"sServerMethod": "POST",
+//		"oLanguage": {
+//		  "sLoadingRecords": "<div class='loading'></div>",
+//		  "sProcessing": "<div class='loading'></div>",
+//		},
+//		"fnServerParams": function ( aoData ) {
+//			var id = $(this).attr('id');
+//			aoData.push( { "name": "id", "value": id } );
+//		},
+//		"aoColumnDefs": [
+//			{ "bSortable": false, "aTargets": [ 'sort_none' ] },
+//			{  "sClass": "thin", "aTargets": [ -1,-2,-3 ] }
+//		],
+//		"fnInitComplete": function() {
+//
+//			$(".cbox_900").colorbox({
+//				width:"900px",
+//				height:"95%",
+//				iframe:true
+//			});
+//			datatable_action_button(tableDataList);
+//		}
+//	});
+
+	select_store_view();
+	select_customize_link();
+
+	//check any duplicate value when add/edit data
+	$('.checkDuplicate').blur(
+		function(){
+			//get data
+			var value = $(this).val();
+
+			//if data is empty, stop checking
+			if(value == "")
+				return false;
+
+			var input = $(this);
+			var type = $(this).attr('data-type');
+			var field_actual_name = $(this).attr('data-field-actual-name');
+			var store_id = get_segment(3);
+			var data_id = $(this).attr('data-id');
+
+			//ajax validation
+			$.ajax({
+				url: site_url('database_stores/check_duplicate'),
+				type: "POST",
+				data: 	{
+					'type' : type,
+					'field_actual_name' : field_actual_name,
+					'store_id' : store_id,
+					'value' : value,
+					'data_id' : data_id,
+				},
+				async: false,
+				success: function (data){
+					//if data false, mean duplicate data found and display duplicate msg
+					if( data != true )
+					{
+						input.css('border','1px solid red');
+						if(!(input.parent().find('.duplicate_msg').length > 0))
+							input.after('<span class="duplicate_msg" style="font-weight: bold;color: red;padding: 5px;">Duplicate Record Found</span>');
+					}
+					else
+					{	input.css('border', '');
+						input.next().remove();
+					}
+				}
+			});
+		}
+	);
+
+	//check any duplicate file when add/edit data
+	$('.upload_file').change(function(event){
+		//get files data
+		var files = event.target.files;
+		var file = files[0];
+
+		//use FileReader
+		var reader = new FileReader();
+
+		var input = $(this);
+		var type = $(this).attr('data-type');
+		var field_actual_name = $(this).attr('data-field-actual-name');
+		var store_id = get_segment(3);
+		var data_id = $(this).attr('data-id');
+
+		//perform validation
+        reader.onload = function(readerEvt) {
+			//use md5 to get the hash value
+            var binaryString = readerEvt.target.result;
+            encode = btoa(binaryString);
+			var hash = md5(encode);
+
+			//ajax validation, use md5 value to compare file
+			$.ajax({
+				url: site_url('database_stores/check_duplicate'),
+				type: "POST",
+				data: 	{
+					'type' : type,
+					'field_actual_name' : field_actual_name,
+					'store_id' : store_id,
+					'value' : hash,
+					'data_id' : data_id,
+				},
+				async: false,
+				success: function (data){
+					//if data false, mean duplicate data found and display duplicate msg
+					if( data != true )
+					{
+						input.css('border','1px solid red');
+						if(!(input.parent().find('.duplicate_msg').length > 0))
+							input.after('<span class="duplicate_msg" style="font-weight: bold;color: red;padding: 5px;">Duplicate Record Found</span>');
+					}
+					else
+					{	input.css('border', '');
+						input.next().remove();
+					}
+				}
+			});
+        };
+
+        reader.readAsBinaryString(file);
+	});
+
+	//field sortable in add/edit store page
+	$(".field-move-container").sortable({
+		items: '.field-container',
+		handle: '.field-move',
+		stop: function() {
+			var tr = $(this).parent().find('tbody > tr.field-container');
+
+			var i = 0;
+			tr.each(function(){
+				i = i + 1;
+				$(this).find('.position').val(i);
+			});
+
+		},
+	});
+
+	//enable redirect content show/hide in add/edit store page
+	$('#enable-redirect-content').on('change',function(){
+		is_checked = $(this).is(':checked');
+
+		if(is_checked)
+		{
+			$('#redirect-content-row').show();
+		}
+		else
+		{
+			$('#redirect-content-row').hide();
+		}
+
+	}).change();
+
+	$(".input_next").keyup(function () {
+		if (this.value.length == this.maxLength) {
+			id = $(this).attr('id');
+			$(this).next('#'+id).focus();
+		}
+	});
+	
+	//Added on 7/3/2025
+	if (typeof daterangepicker === 'function') {
+        $('.dbstore_datetimepicker').daterangepicker({
+            autoUpdateInput: false,
+            timePicker:true,
+            timePicker24Hour:true,
+            timePickerSeconds:true,
+            locale: {
+                format: 'YYYY-MM-DD HH:mm:ss',
+                cancelLabel: 'Clear'
+            },
+            singleDatePicker: true,
+            showDropdowns: true,
+            drops: "down",
+            
+        });
+
+        $('.dbstore_datetimepicker').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD HH:mm:ss'));
+        });
+
+        $('.dbstore_datetimepicker').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
+    }
+
+});
+
+//insert field column in add/edit store page
+function add_column()
+{
+    siteUrl = site_url('database_stores/insert_column');
+    current_column_count = $('#hidden_column_count').val();
+	new_position = parseInt($('.field-move-container > tr.field-container:last').find('.position').val()) + 1;
+    new_count =parseInt(current_column_count) + 1;
+
+    $.ajax({
+        url: siteUrl,
+        type: "POST",
+        data: 	{
+            'action' : 'insert column',
+            'current_column' : current_column_count,
+			'position' : new_position,
+        },
+        async: false,
+        success: function (data){
+
+			$('#hidden_column_count').val(new_count);
+			$(data).insertBefore($('#add_column_tr'));
+
+		}
+    });
+}
+
+
+function remove_column(id)
+{
+
+   $("#tr_column_"+id).html('');
+
+}
+
+
+
+function type_change(id)
+{
+    value = $('#new_type_'+id).val();
+
+    is_enum = value.indexOf('enum_selections') >= 0; // true
+
+    if(is_enum == true)
+    {
+        $textbox = "<input type=\"text\" class=\"input\" name=\"new_option_"+id+"\">";
+        $('#tr_column_'+id+' td:eq(2)').html($textbox);
+
+    }
+    else
+    {
+        $('#tr_column_'+id+' td:eq(2)').html('-');
+    }
+
+    siteUrl = site_url('database_stores/insert_validation');
+    $.ajax({
+        url: siteUrl,
+        type: "POST",
+        data: 	{
+            'action' : 'insert validation',
+            'is_enum' : is_enum    ,
+            'id' : id
+        },
+        async: false,
+        success: function (data){
+
+            }
+    });
+
+
+}
+
+function init_mobile_datatable(display_type){
+	if(display_type == "mobile")
+		filter_value = false;
+	else
+		filter_value = true;
+
+	$('.view_page_list_table').dataTable({
+		"bAutoWidth": false,
+		"bJQueryUI": false,
+		"sDom": 't',
+		"bSort": true,
+		"aaSorting": [],
+		"iDisplayLength": 25,
+		"sPaginationType": "full_numbers",
+		"bStateSave": true,
+		"bLengthChange": true,
+		"bFilter": filter_value
+		
+	});
+}
+
+
+
+
+
+function init_ds_view_pagination(count,display){
+	$(".jPaginate").paginate({
+		count 		: count,
+		start 		: 1,
+		display     : display,
+		border					: false,
+		text_color  			: '#79B5E3',
+		background_color    	: 'none',
+		text_hover_color  		: '#2573AF',
+		background_hover_color	: 'none',
+		images		: false,
+		mouse		: 'press',
+		onChange    : function(page){
+			$('._current','#paginationdiv').removeClass('_current').hide();
+			$('#page_'+page).addClass('_current').show();
+		}
+	});
+}
+
+
+
+function add_filter_field(){
+	filter_count = $('#hidden_filter_count').val();
+	actual_qty = $('#hidden_filter_actual_qty').val();
+	store_id = $('#hidden_store_id').val();
+	siteUrl = site_url('database_stores/generate_filter_field');
+    $.ajax({
+        url: siteUrl,
+        type: "POST",
+        data: 	{
+            'action' : 'insert filter field',
+            'filter_count' : filter_count,
+			'store_id' : store_id
+        },
+        async: false,
+        success: function (data){
+			filter_count = parseInt(filter_count) || 0;
+			filter_count = filter_count+ 1;
+
+			actual_qty = parseInt(actual_qty) || 0;
+			actual_qty = actual_qty+ 1;
+
+			$('#hidden_filter_count').val(filter_count);
+			$('#hidden_filter_actual_qty').val(actual_qty);
+			$('#filter_field_table').append(data);
+			$('#filter_field_table').removeClass('hidden_table');
+
+        }
+    });
+}
+
+
+function filter_remove(id){
+	element = document.getElementById(id);
+	element.parentNode.removeChild(element);
+	actual_qty = $('#hidden_filter_actual_qty').val();
+	actual_qty = parseInt(actual_qty) || 0;
+	actual_qty = actual_qty - 1;
+	$('#hidden_filter_actual_qty').val(actual_qty);
+	if(actual_qty == 0)
+		$('#filter_field_table').addClass('hidden_table');
+
+}
+
+
+function select_store_view()
+{
+	// database store block.
+	// first to get the value of select.
+	var store_view = $('.store').val();
+	var id = $('.setting_form').closest('form').attr('id');
+
+	if(editorMode == 'tinymce')
+		var url = assets_path("modules/database_stores/scripts/database_store_tinymce_load.js"); // reinit tinymce
+	else if(editorMode == 'ckeditor')
+		var url = assets_path("shared/scripts/ckeditor/ckeditor_load.js?c=basic"); // reinit ckeditor
+	else
+		console.log('Editor mode does not set properly');
+
+	// if not equal to 0 means the is selected.
+	if(store_view != "" || store_view != 0)
+	{
+		// pull the data out.
+		$.ajax({
+
+			url: site_url('database_stores/store_block_form'),
+			type: 'POST',
+			datatype: 'text',
+			data: {viewId:store_view,blockId:id},
+			success: function(data){
+
+				$.getScript( url);
+				$('.setting_form').html(data);
+
+			}
+		});
+	}
+
+	$(document).on('change', '.store', function (){
+
+		var store_view = $('.store').val();
+
+		if(store_view != 0)
+		{
+			$.ajax({
+
+				url: site_url('database_stores/store_block_form'),
+				type: 'POST',
+				datatype: 'text',
+				data: {viewId:store_view,blockId:id},
+				success: function(data){
+
+					$.getScript( url);
+					$('.setting_form').html(data);
+
+				}
+			});
+		}
+		else
+		{
+			$('.setting_form').html('');
+		}
+	});
+
+
+}
+
+function insert_editor_field_key( mode, word)
+{
+
+	if( mode == 'tinymce' )
+	{
+		tinyMCE.activeEditor.insertContent(word);
+		return false;
+	}
+	else if( mode == 'ckeditor' )
+	{
+		var curInstance =  CKEDITOR.currentInstance;
+
+		if(curInstance !== undefined)
+			curInstance.insertHtml(word);
+		else
+			alert("Please focus in editor.");
+		return false;
+	}
+	else
+	{
+		alert('Editor does not set properly.');
+	}
+}
+
+function select_customize_link()
+{
+	var options = $(':radio[name="data_link_enable"]'),
+		optionVal;
+
+	if(options != undefined )
+	{
+		$(options).each(function () {
+
+			if($(this).is(':checked'))
+			{
+				optionVal = $(this).val();
+			}
+		});
+
+		if(optionVal == 2)
+			$('.customize').show();
+		else
+			$('.customize').hide();
+
+		$(':radio[name="data_link_enable"]').click(function() {
+
+			var optionVal = $(this).val();
+
+			if(optionVal == 2)
+				$('.customize').show();
+			else
+				$('.customize').hide();
+		});
+	}
+}
+
+//load addtiona search field output in edit view
+function loadSearchFieldOutput(view_id)
+{
+	if(view_id == 0)
+		return false;
+	
+	//get edit search field output
+	$.ajax({
+		url: site_url('database_stores/load_customize_search_field_output'),
+		data: {
+			'view_id' : view_id,
+		},
+		type: 'POST',
+		dataType : 'json',
+		success: function(data) {
+			
+			// append and load setting base on data
+			$('.customize-field-container').html(data['search_output']);
+
+			$('.search-row').each(function(i){
+				$(this).attr('data-id',(i+1));
+				$(this).data('label',data['search_rows'][i]['label']);
+				$(this).data('type',data['search_rows'][i]['type']);
+				$(this).data('options',data['search_rows'][i]['options']);
+				$(this).data('criteria',data['search_rows'][i]['criteria']);
+				$(this).data('data-id',(i+1));
+			});
+
+		}
+	})
+}
+
+//load additional search field script
+function loadSearchFieldScript(store_id)
+{
+
+	$(document).on('click','.add-search-field',function(event){
+		event.preventDefault();
+		
+		//add new search field row
+		html = add_field();
+		$('.customize-field-container').append(html);
+		
+		//set init data
+		row_length = $('.customize-field-container .search-row').length;
+		row = $('.customize-field-container .search-row:last');
+		row.data('label','Search');
+		row.data('type','input');
+		row.data('options','');
+		row.data('criteria','');
+		row.data('data-id',row_length);
+		row.attr('data-id',row_length);
+	});
+
+	//edit search field
+	$(document).on('click','.r-form-edit',function(event){
+		event.preventDefault();
+		row = $(this).parent().parent();
+
+		//get edit search field output
+		$.ajax({
+			url: site_url('database_stores/load_customize_search_field'),
+			data: {
+				'store_id' : store_id,
+			},
+			type: 'POST',
+			success: function(r) {
+				
+				//append and load setting base on data
+				$('#element-form').html(r);
+				initSeachField(row);
+				$('.search-type').change();
+
+			}
+		})
+
+		$( "#dialog-form" ).dialog( "open" );
+	});
+
+	//deletet search field
+	$(document).on('click','.r-form-del',function(event){
+		event.preventDefault();
+		row = $(this).parent().parent();
+		row.remove();
+	});
+
+	//add option
+	$(document).on('click','.add_option',function(event){
+		event.preventDefault();
+
+		item = $(this).parent('li').clone(true);
+		item.find('.input_option').val('');
+		item.appendTo('.reference-list');
+
+	});
+	
+	//delete option
+	$(document).on('click','.del_option',function(event){
+		event.preventDefault();
+
+		$(this).parent('li').remove();
+	});
+
+	//change setting base on type
+	$(document).on('change','.search-type',function(event){
+		event.preventDefault();
+	
+		type = $(this).val();
+
+		switch(type)
+		{
+			case 'input':
+				$('.reference-container').hide();
+			break;
+
+			case 'dropdown':
+			case 'radio':
+				$('.reference-container').show();
+			break;
+
+			default:
+				$('.reference-container').hide();
+		}
+	});
+
+	// form popup modal edit row
+	dialog = $( "#dialog-form" ).dialog({
+		autoOpen: false,
+		height: 450,
+		width: 600,
+		modal: true,
+		dialogClass: "dialog-css-editor",
+		buttons: {
+			"Save": function() {
+				//get data from the form
+				id = $('#dialog-form-group').data('data-id');
+				label = $('#dialog-form-group').find('[name="field_label"]').val();
+				type = $('#element-form').find('.search-type').val();
+				
+				//get the search criteria
+				var criteria = $('.search-criteria');
+				var criteria_list = [];
+
+				for (var i=0; i<criteria.length; i++) {
+					// And stick the checked ones onto an array...
+					if (criteria[i].checked) {
+						criteria_list.push(criteria[i].value);
+					}
+				}
+
+				//get options 
+				var option_list = [];
+
+				switch(type)
+				{
+					case 'dropdown':
+					case 'radio':
+						$('.input_option').each(function(i){
+							option_list.push($(this).val());
+						});
+					break;
+
+				}
+
+				//set data to the row
+				$('[data-id="'+id+'"]').data('label',label);
+				$('[data-id="'+id+'"]').data('type',type);
+				$('[data-id="'+id+'"]').data('criteria',criteria_list);
+				$('[data-id="'+id+'"]').data('options',option_list);
+				
+				//update search output
+				$('[data-id="'+id+'"] .row-label').html('<label>'+label+'</label>');
+				
+				//change the search field based on data
+				switch(type)
+				{
+					case 'dropdown':
+					case 'radio':
+						search_output = '<select class="field_select input_300 input">';
+
+						$('.input_option').each(function(i){
+							search_output += '<option value="'+$(this).val()+'">'+$(this).val()+'</option>';
+						});
+
+						search_output += '</select>';
+					break;
+
+					case 'input':
+						search_output = '<input class="field_input input_300 input">';
+					break;
+				}
+
+				$('[data-id="'+id+'"] .row-field').html(search_output);
+
+				dialog.dialog( "close" );
+			},
+			Cancel: function() {
+				dialog.dialog( "close" );
+			}
+		},
+		close: function() {
+			$('#element-form').html('Loading...');
+		}
+	});
+
+	//create other input for storing additional search data and save store view
+	$(document).on('click','.save_store_view',function(event){
+		event.preventDefault();
+
+		var search_field = [];
+
+		$('.search-row').each(function(i){
+			search_field.push({ 
+				label   : $(this).data('label'),
+				type   : $(this).data('type'),
+				options : JSON.stringify($(this).data('options'),null,2),
+				criteria : JSON.stringify($(this).data('criteria'),null,2),
+			});
+		});
+		
+		search_rows = JSON.stringify(search_field,null,2);
+		$('<input />').attr('type', 'hidden').attr('name', 'search_rows').attr('value', search_rows).appendTo('#main_form');
+		$('#main_form').submit();
+
+	});
+}
+
+//return search field output
+function add_field()
+{
+	output = '<div class="search-row">'+
+					'<div class="row-label"><label>Search</label>:</div>'+
+					'<div class="row-field"><input class="field_input input_300 input"></div>'+
+					'<div class="row-config">'+
+						'<button class="r-form-edit"><span class="ui-icon ui-icon-pencil"></span></button>'+
+						'<button class="r-form-del"><span class="ui-icon ui-icon-trash"></span></button>'+
+					'</div>'+
+				'</div>';
+	
+	return output;
+}
+
+//init setting data into edit search field 
+function initSeachField(row)
+{
+	//get data from search field row
+	label = row.data('label');
+	type = row.data('type');
+	criteria = row.data('criteria');
+	options = row.data('options');
+
+	//set the data for label and type
+	$('#element-form #dialog-form-group').data('data-id',row.data('data-id'));
+	$('#element-form').find('[name="field_label"]').val(label);
+	$('#element-form').find('.search-type').val(type);
+
+	//set the options output for dropdown and radio use
+	if ( options.length != 0 )
+	{
+		$.each(options, function(i,d)
+		{	
+			output = generate_option_item(d);
+			$('.reference-list').append(output);
+		});
+	}
+	else
+	{
+		output = generate_option_item('');
+		$('.reference-list').append(output);
+	}
+
+	//set search criteria 
+	if ( criteria.length != 0 )
+	{
+        $.each(criteria, function(i,d) 
+		{
+			$('#'+d).prop('checked', true);
+		});
+    }
+
+	$(".reference-list").sortable({
+		handle: '.move_option',
+		containment: '.reference-list',
+	});
+	
+}
+
+//generate option row
+function generate_option_item(value)
+{
+	output = '<li class="reference-item">'+
+				'<input type="input" name="reference_input" class="input_option" value="'+value+'">'+
+				'<a class="add_option">Add</a>'+
+				'<a class="del_option">Delete</a>'+
+				'<a class="move_option">Move</a>'+
+				'</li>';
+
+	return output;
+}
+
+function fileValidation(file) {
+
+    var fileAcceptType = [
+        'application/vnd.ms-excel', // xls
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // xlsx
+    ]
+
+    // check file type
+    if( fileAcceptType.indexOf(file.type) === -1) {
+
+        $('.error_box').html('<div class="error">Invalid File type. allowed file .csv, .xls, .xlsx</div>')
+        $('body, html').animate({ scrollTop: 0 }, 800);
+
+        return false;
+    }
+
+    return true;
+}

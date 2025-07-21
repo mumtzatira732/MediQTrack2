@@ -1,0 +1,67 @@
+/*.new_datatable_container .dataTables_wrapper {
+    background: none;
+    border: none!important;
+}
+.new_datatable_container .dataTable thead .sorting,
+.new_datatable_container .dataTable thead .sorting_desc,
+.new_datatable_container .dataTable thead .sorting_asc{
+	background-image: none;
+}
+
+.new_datatable_container .dataTables_paginate, .new_datatable_container .dataTables_filter{
+    background: none!important;
+    border: none!important;
+}
+.new_datatable_container .dataTables_info {
+    float: right!important;
+}
+.new_datatable_container .dataTables_paginate {
+    float: left!important;
+    width: auto!important;
+}
+.new_datatable_container table.dataTable.no-footer {
+    border:none!important;
+}
+.new_datatable_container table.dataTable thead{
+    background: #3ac47d1c;
+}
+.new_datatable_container table.dataTable thead th, .new_datatable_container table.dataTable thead td {
+    border-bottom: none!important;
+}
+.new_datatable_container table.data_table thead tr, .new_datatable_container table.data_table tfoot tr {
+    background: #2196F3!important;
+}
+	
+.new_datatable_container table.data_table tbody tr{
+	border-bottom: 1px solid #f1f1f1!important;
+}
+
+.new_datatable_container table.data_table tbody tr:hover{
+	background: #f8f8f8;
+}
+.new_datatable_container table.data_table .even td, .new_datatable_container table.data_table .odd td {
+    background: none!important;
+}
+.new_datatable_container table.data_table thead th, .new_datatable_container table.data_table tfoot th{
+	color: #fff!important;
+	font-weight: normal!important;
+}
+
+.new_datatable_container .dataTables_paginate .paginate_button.first{
+	margin-left: 0px!important;
+}
+
+.new_datatable_container .dataTables_paginate .paginate_button, .new_datatable_container .dataTables_paginate .paginate_active, .new_datatable_container .dataTables_paginate .ellipsis{
+	background: none!important;
+	padding: 8px 10px!important;
+
+}
+
+.new_datatable_container .dataTables_paginate .paginate_button:hover, .new_datatable_container .dataTables_paginate .paginate_button.current{
+	background: #2196F3!important;
+	color: #fff!important;
+}
+
+.new_datatable_container .dataTables_wrapper .dataTables_paginate .paginate_button.disabled, .new_datatable_container .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover, .new_datatable_container .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active{
+	border:1px solid #ccc!important;
+}*/

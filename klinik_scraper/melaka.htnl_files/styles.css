@@ -1,0 +1,455 @@
+@import url(https://fonts.googleapis.com/css?family=Montserrat:400,700);
+.responsive_menu,
+.responsive_menu ul,
+.responsive_menu ul li,
+.responsive_menu ul li a,
+.responsive_menu #menu-button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  list-style: none;
+  line-height: 1;
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.responsive_menu:after,
+.responsive_menu > ul:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+.responsive_menu #menu-button {
+  display: none;
+}
+.responsive_menu {
+  font-family: Montserrat, sans-serif;
+  background: #333333;
+}
+.responsive_menu > ul > li {
+  float: left;
+}
+.responsive_menu.align-center > ul {
+  font-size: 0;
+  text-align: center;
+}
+.responsive_menu.align-center > ul > li {
+  display: inline-block;
+  float: none;
+}
+.responsive_menu.align-center ul ul {
+  text-align: left;
+}
+.responsive_menu.align-right > ul > li {
+  float: right;
+}
+.responsive_menu > ul > li > a {
+  padding: 17px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-decoration: none;
+  color: #dddddd;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.responsive_menu > ul > li:hover > a {
+  color: #ffffff;
+}
+.responsive_menu > ul > li.has-sub > a {
+  padding-right: 30px;
+}
+
+/*Remove the + and - icon
+.responsive_menu > ul > li.has-sub > a:after {
+  position: absolute;
+  top: 22px;
+  right: 11px;
+  width: 8px;
+  height: 2px;
+  display: block;
+  background: #dddddd;
+  content: '';
+}
+.responsive_menu > ul > li.has-sub > a:before {
+  position: absolute;
+  top: 19px;
+  right: 14px;
+  display: block;
+  width: 2px;
+  height: 8px;
+  background: #dddddd;
+  content: '';
+  -webkit-transition: all .25s ease;
+  -moz-transition: all .25s ease;
+  -ms-transition: all .25s ease;
+  -o-transition: all .25s ease;
+  transition: all .25s ease;
+}
+*/
+.responsive_menu > ul > li.has-sub:hover > a:before {
+  top: 23px;
+  height: 0;
+}
+.responsive_menu ul ul {
+  position: absolute;
+  left: -9999px;
+}
+.responsive_menu.align-right ul ul {
+  text-align: right;
+}
+.responsive_menu ul ul li {
+  -webkit-transition: all .25s ease;
+  -moz-transition: all .25s ease;
+  -ms-transition: all .25s ease;
+  -o-transition: all .25s ease;
+  transition: all .25s ease;
+}
+.responsive_menu li:hover > ul {
+  left: auto;
+}
+.responsive_menu.align-right li:hover > ul {
+  left: auto;
+  right: 0;
+}
+.responsive_menu ul ul ul {
+  margin-left: 100%;
+  top: 0;
+}
+.responsive_menu.align-right ul ul ul {
+  margin-left: 0;
+  margin-right: 100%;
+}
+.responsive_menu ul ul li a {
+  border-bottom: 1px solid rgba(150, 150, 150, 0.15);
+  padding: 11px 15px;
+  width: 170px;
+  font-size: 12px;
+  text-decoration: none;
+  color: #dddddd;
+  font-weight: 400;
+  background: #333333;
+}
+.responsive_menu ul ul li:last-child > a,
+.responsive_menu ul ul li.last-item > a {
+  border-bottom: 0;
+}
+.responsive_menu ul ul li:hover > a,
+.responsive_menu ul ul li a:hover {
+  color: #ffffff;
+}
+.responsive_menu ul ul li.has-sub > a:after {
+  position: absolute;
+  top: 16px;
+  right: 11px;
+  width: 8px;
+  height: 2px;
+  display: block;
+  background: #dddddd;
+  content: '';
+}
+.responsive_menu.align-right ul ul li.has-sub > a:after {
+  right: auto;
+  left: 11px;
+}
+.responsive_menu ul ul li.has-sub > a:before {
+  position: absolute;
+  top: 13px;
+  right: 14px;
+  display: block;
+  width: 2px;
+  height: 8px;
+  background: #dddddd;
+  content: '';
+  -webkit-transition: all .25s ease;
+  -moz-transition: all .25s ease;
+  -ms-transition: all .25s ease;
+  -o-transition: all .25s ease;
+  transition: all .25s ease;
+}
+.responsive_menu.align-right ul ul li.has-sub > a:before {
+  right: auto;
+  left: 14px;
+}
+.responsive_menu ul ul > li.has-sub:hover > a:before {
+  top: 17px;
+  height: 0;
+}
+
+.responsive_menu ul > li.has-sub > ul{
+  z-index: 99;
+}
+
+.responsive_menu img {
+  max-width: 100%;
+}
+
+@media all and (max-width: 768px), only screen and (-webkit-min-device-pixel-ratio: 2) and (max-width: 1024px), only screen and (min--moz-device-pixel-ratio: 2) and (max-width: 1024px), only screen and (-o-min-device-pixel-ratio: 2/1) and (max-width: 1024px), only screen and (min-device-pixel-ratio: 2) and (max-width: 1024px), only screen and (min-resolution: 192dpi) and (max-width: 1024px), only screen and (min-resolution: 2dppx) and (max-width: 1024px) {
+  .responsive_menu {
+    width: 100%;
+  }
+  .responsive_menu ul {
+    width: 100%;
+    display: none;
+  }
+  .responsive_menu.align-center > ul {
+    text-align: left;
+  }
+  .responsive_menu ul li {
+    width: 100% !important;
+    border-top: 1px solid rgba(120, 120, 120, 0.2);
+  }
+  .responsive_menu ul ul li,
+  .responsive_menu li:hover > ul > li {
+    height: auto;
+  }
+  .responsive_menu ul li a,
+  .responsive_menu ul ul li a {
+    width: 100%;
+    border-bottom: 0;
+  }
+  .responsive_menu > ul > li {
+    float: none;
+  }
+  .responsive_menu ul ul li a {
+    padding-left: 25px;
+  }
+  .responsive_menu ul ul ul li a {
+    padding-left: 35px;
+  }
+  .responsive_menu ul ul li a {
+    color: #dddddd;
+    background: none;
+  }
+  .responsive_menu ul ul li:hover > a,
+  .responsive_menu ul ul li.active > a {
+    color: #ffffff;
+  }
+  .responsive_menu ul ul,
+  .responsive_menu ul ul ul,
+  .responsive_menu.align-right ul ul {
+    position: relative;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    text-align: left;
+  }
+  .responsive_menu > ul > li.has-sub > a:after,
+  .responsive_menu > ul > li.has-sub > a:before,
+  .responsive_menu ul ul > li.has-sub > a:after,
+  .responsive_menu ul ul > li.has-sub > a:before {
+    display: none;
+  }
+  .responsive_menu #menu-button {
+    display: block;
+    padding: 17px;
+    color: #dddddd;
+    cursor: pointer;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .responsive_menu #menu-button:after {
+    position: absolute;
+    top: 22px;
+    right: 17px;
+    display: block;
+    height: 8px;
+    width: 20px;
+    border-top: 2px solid #dddddd;
+    border-bottom: 2px solid #dddddd;
+    content: '';
+  }
+  .responsive_menu #menu-button:before {
+    position: absolute;
+    top: 16px;
+    right: 17px;
+    display: block;
+    height: 2px;
+    width: 20px;
+    background: #dddddd;
+    content: '';
+  }
+  .responsive_menu #menu-button.menu-opened:after {
+    top: 23px;
+    border: 0;
+    height: 2px;
+    width: 15px;
+    background: #ffffff;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+  .responsive_menu #menu-button.menu-opened:before {
+    top: 23px;
+    background: #ffffff;
+    width: 15px;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+  }
+  .responsive_menu .submenu-button {
+    position: absolute;
+    z-index: 100;
+    right: 0;
+    top: 0;
+    display: block;
+    border-left: 1px solid rgba(120, 120, 120, 0.2);
+    height: 46px;
+    width: 46px;
+    cursor: pointer;
+  }
+  .responsive_menu .submenu-button.submenu-opened {
+    background: #262626;
+  }
+  .responsive_menu ul ul .submenu-button {
+    height: 34px;
+    width: 34px;
+  }
+  .responsive_menu .submenu-button:after {
+    position: absolute;
+    top: 22px;
+    right: 19px;
+    width: 8px;
+    height: 2px;
+    display: block;
+    background: #dddddd;
+    content: '';
+  }
+  .responsive_menu ul ul .submenu-button:after {
+    top: 15px;
+    right: 13px;
+  }
+  .responsive_menu .submenu-button.submenu-opened:after {
+    background: #ffffff;
+  }
+  .responsive_menu .submenu-button:before {
+    position: absolute;
+    top: 19px;
+    right: 22px;
+    display: block;
+    width: 2px;
+    height: 8px;
+    background: #dddddd;
+    content: '';
+  }
+  .responsive_menu ul ul .submenu-button:before {
+    top: 12px;
+    right: 16px;
+  }
+  .responsive_menu .submenu-button.submenu-opened:before {
+    display: none;
+  }
+  
+  /*change color style*/
+  .responsive_menu.orange .submenu-button.submenu-opened {
+    background: #f1c40f;
+  }
+  
+  .responsive_menu.brown .submenu-button.submenu-opened {
+    background: #8D6E63;
+  }
+
+  .responsive_menu.red .submenu-button.submenu-opened {
+    background: #EF5350;
+  }
+  
+  .responsive_menu.deeppink .submenu-button.submenu-opened {
+    background: #F214FF;
+  }
+  
+  .responsive_menu.mediumseagreen .submenu-button.submenu-opened {
+    background: #2E8B57;
+  }
+  
+  .responsive_menu.purple .submenu-button.submenu-opened {
+    background: #800080;
+  }
+  
+  .responsive_menu.steelblue .submenu-button.submenu-opened {
+    background: #2B95EC;
+  }
+  
+  .responsive_menu.lightslategrey .submenu-button.submenu-opened {
+    background: #6E7D8C;
+  }
+  
+  /*menu label style*/
+  .responsive_menu.white #menu-button {
+    color: #333333;
+  }
+  
+  /*menu icon style*/
+  .responsive_menu.white #menu-button:after {
+    border-color: #333333;
+  }
+  
+  .responsive_menu.white #menu-button.menu-opened:after, .responsive_menu.white #menu-button:before {
+    background: #333333;
+  }
+    
+  /*submenu icon style*/
+  .responsive_menu.white .submenu-button:before, .responsive_menu.white .submenu-button:after  {
+    background: #333333;
+  }
+  
+  /*submenu icon opened style*/
+  .responsive_menu.white .submenu-button.submenu-opened:before, .responsive_menu.white .submenu-button.submenu-opened:after  {
+    background: #ffffff;
+  }
+}
+
+/*change menu style*/
+.responsive_menu.orange, .responsive_menu.orange ul ul li a {
+  background: #FFA500;
+}
+
+.responsive_menu.brown, .responsive_menu.brown ul ul li a {
+  background: #6D4C41;
+}
+
+.responsive_menu.red, .responsive_menu.red ul ul li a {
+  background: #E53935;
+}
+
+.responsive_menu.deeppink, .responsive_menu.deeppink ul ul li a {
+  background: #FF1493;
+}
+
+.responsive_menu.purple, .responsive_menu.purple ul ul li a {
+  background: #8E24AA;
+}
+
+.responsive_menu.mediumseagreen, .responsive_menu.mediumseagreen ul ul li a {
+  background: #3CB371;
+}
+
+.responsive_menu.steelblue, .responsive_menu.steelblue ul ul li a {
+  background: #4682B4;
+}
+
+.responsive_menu.lightslategrey, .responsive_menu.lightslategrey ul ul li a {
+  background: #778899;
+}
+
+.responsive_menu.white, .responsive_menu.white ul ul li a  {
+  background: #ffffff;
+}
+
+/*change label color*/
+.responsive_menu.white > ul > li > a, .responsive_menu.white ul ul li a {
+  color: #333333;
+}
+
+/*change menu icon color*/
+.responsive_menu.white ul ul li.has-sub > a:after, .responsive_menu.white ul ul li.has-sub > a:before  {
+  background: #333333;
+}

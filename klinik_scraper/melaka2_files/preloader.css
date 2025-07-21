@@ -1,0 +1,64 @@
+/*
+	Author: Shero Gan
+        Description: a) Display a progress meter upon saving a form, or b) during loading a page.
+	Usage:	Sample can refer to modules/bookshelf/views/add.php
+		1. Make sure assets/shared/images/preloader.gif exist.
+		2. In the modules conroller file make sure the submit button has an element id e.g. "save". Note the element name must not be "submit" instead use a name there is relavent to the action e.g. "save", "update", "send", and etc.
+			$data['submit_btn'] = form_submit('save',system_lang('MODULE_SAVE_BTN'),'id="save" class="button"');
+		2. Insert the line below to your views file
+			<div class="preloader"><div class="preloadStatus"></div></div>
+		3. Insert the css file
+			<link rel="stylesheet" type="text/css" media="all" href="<?= base_url() ?>assets/shared/css/preloader.css">
+		4. For Ajax only, you need to include the js file
+			<script type="text/javascript" language="javascript" src="<?= base_url() ?>assets/shared/scripts/preloader.js"></script>
+		5. Turn on the progress meter
+			$('.preloader').addClass("preloader-display");
+		6. Turn off the progress meter
+			$('.preloader').removeClass("preloader-display"); 
+		7. Insert the jquery script below to your views file
+			<script>
+				$(function(){
+					$('#update').click(function() {
+						//$('.preloader').addClass("preloader-display"); // display the progress meter
+						$('.preloader').css('visibility', 'visible'); // quick show the progress meter
+						setTimeout(function(){ $('form').submit(); }, 1000); // show for 1 second and more
+					});
+				});
+			</script>
+	Note: See the jQuery submit() documentation. Forms and their child elements should not use input names or ids that conflict with properties of a form, such as submit, length, or method. Name conflicts can cause confusing failures.
+	Comment: Additional reading:
+		NProgress.js - http://ricostacruz.com/nprogress/
+		PACE - http://github.hubspot.com/pace/docs/welcome/
+*/
+
+.preloadStatus { 
+    width: 60px;
+    height: 60px;
+    position: absolute;    
+    background-repeat: no-repeat;
+    background-position: center;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    text-align: center;
+    background: url("../images/preloader.gif") no-repeat; 
+} 
+
+.preloader { 
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 101;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.6);
+    visibility: hidden; 
+} 
+
+.preloader-display { 
+    visibility: visible; 
+} 
+

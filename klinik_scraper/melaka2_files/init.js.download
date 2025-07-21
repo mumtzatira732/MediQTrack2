@@ -1,0 +1,167 @@
+
+// The rootPath is in many EPMS javascrips and ckeditor/config.js->config.baseHref
+//var rootPath = '/';
+var rootPath = 'https://www.moh.gov.my/'; // Modified by George on 20210627 to use FQDN for ajax call
+var indexPage = 'index.php'; // Used by admin.js->get_segment() and internal_link.js
+var indexPath = rootPath+'index.php';
+var loggedId = '';
+var loggedGuid = '';
+var editorMode = 'ckeditor';
+var themeName = 'admin';
+
+/*
+ * Added by Raj on 20210618
+ * Description: Chat settings and user information
+ * Require: architect-ui
+ * Usage: chat and chat firebase modules
+ */
+var loggedUsername = '';
+var loggedDisplayName = '';
+var gfb_cfg = [];
+var fcm_pk = '';
+/*--End -- */
+
+var gs_browser_status = '';
+var gn_break_point = 0;
+
+function base_url(){
+	return rootPath;
+}
+
+function root_url() {
+	return 'https://www.moh.gov.my/';
+}
+
+function index_path(){
+ return indexPath;
+}
+
+function site_url(url){
+
+	return indexPath+'/'+url;
+	<!-- return indexPath+url; -->
+}
+
+function assets_path(path){
+	return rootPath+'assets/'+path;
+}
+
+function get_logged_id(){
+	return loggedId;
+}
+
+function get_logged_guid(){
+	return loggedGuid;
+}
+
+/*
+ * Added by George on 20210526
+ * Description: Open right slide panel
+ * Require: architect-ui
+ * Usage: <a href="/index.php/system" onClick="slide_panel_open(this)">...</a>
+ */
+function slide_panel(e, title, width)
+{
+	//alert(e.href);
+
+	// See https://stackoverflow.com/questions/3655627/jquery-append-object-remove-it-with-delay
+	$(`<div class="app-drawer-wrapper">
+		<div class="drawer-nav-btn">
+			<button type="button" class="hamburger hamburger--elastic is-active" onClick="$(this).close_slide_panel()">
+			    <span class="hamburger-box"><span class="hamburger-inner"></span></span>
+			</button>
+		</div>
+		<div class="drawer-content-wrapper">
+			<iframe class="slide-iframe" src="${e.href}" style="border:none;position:absolute;width:100%;height:100%"></iframe>
+		</div>
+	   </div>
+	   <div class="app-drawer-overlay d-none animated fadeIn">
+		<style>
+		/* place the <script> inside div so that it can be removed together with div */
+		.app-drawer-wrapper { /* set the slide panel to 90% width */
+		    width: 90%;
+		    right: -90%;
+		}
+		.drawer-nav-btn { /* set the "X" button to the bottom left */
+		    top: initial; /* disable "top" atrribute. See https://www.geeksforgeeks.org/how-to-remove-css-top-and-left-attribute-with-jquery/ */
+		    right: 100%;
+		    bottom: 0px;
+		}
+		</style>
+		<script>
+ 		    /* define jquery function to close the right slide panel */
+		    $.fn.close_slide_panel = function() {
+			// You can either hide the "X" button or animate it :)
+			//$(".drawer-nav-btn").hide(); // hide the "X" button
+			$(".hamburger").toggleClass("is-active"); // trans. effect
+
+			$(".app-drawer-wrapper").removeClass("drawer-open");
+			$(".app-drawer-overlay").addClass("d-none");
+
+			/* wait for animation to complete then remove the class */
+			setTimeout(function() {
+				$(".app-drawer-wrapper").remove();
+				$(".app-drawer-overlay").remove();
+				$('body').css('overflow', 'initial'); /* restore body scrollbars */
+			}, 600); // delay('slow') is 600ms
+		    }
+		</script>
+	   </div>
+	`).appendTo('body')
+	  .delay('fast') /* step 1: wait for div created so that animation can work  */
+	  .queue(function() { /* step 2: open the div and see the fadeIn effect */
+		$(".app-drawer-wrapper").addClass("drawer-open");
+		$(".app-drawer-overlay").removeClass("d-none");
+		$('body').css('overflow', 'hidden'); /* hide body scrollbars */
+ 	});
+
+	// tell the browser not to respond to the link click
+	//e.preventDefault();
+	return false;
+}
+
+/*
+ * Added by George on 20200913
+ * Description: If current URL has mode=iframe then append it to child links upon click or submit event.
+ * Note: Both browser location bar and iFrame src are current url.
+ */
+console.log('add_display_mode: top='+top.location + '\n\nparent='+parent.location + '\n\nwindow=' + window.location);
+function add_display_mode(e) {
+
+	// Both browser location bar and iFrame src are current url.
+	const params = new URLSearchParams(window.location.search); // current URL's params
+	console.log('mode=' + params.get('mode')); 
+
+	//alert(window.location.href);
+	if (params.has('mode')) { // current url has mode=iframe
+		console.log('indexPath=' + indexPath);
+		console.log('attr=' + $(this).attr('href'));
+		console.log('prop=' + $(this).prop('href'));
+
+		//alert($(this).prop('tagName')); // either 'A' or 'FORM'
+		href_or_action = $(this).prop('tagName')=='A'?'href':'action';
+
+		if ($(this).prop(href_or_action) == '') { // use .prop() to detect undefined url
+			console.log('EPMS->init_js->add_display_mode_: no attr for ' + href_or_action);
+			return;
+		}
+
+		if ($(this).attr(href_or_action).startsWith(indexPath)) { // interested only in EPMS domain's link
+			var link = new URL($(this).attr(href_or_action)); // Get current url
+			if (link.search) {
+				// if link has "mode" then preserve it.
+				if (link.search.indexOf("mode=")===-1) // not found
+					link += '&mode=' + params.get('mode');
+			} else
+				link += '?mode=' + params.get('mode');
+			$(this).attr(href_or_action, link); // Set herf value
+			//alert(link);
+		}
+	}
+
+	// tell the browser not to respond to the link click
+	//e.preventDefault();
+}
+
+$("a").live('click', add_display_mode);
+$("form").live('submit', add_display_mode);

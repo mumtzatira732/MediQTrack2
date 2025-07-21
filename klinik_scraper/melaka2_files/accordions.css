@@ -1,0 +1,14 @@
+.tr_hidden{
+	display:none;
+}
+
+
+.group{
+ zoom : 1;
+}
+
+
+.accordion_header h3{
+	padding: .9em .9em .9em 1.9em;
+}
+

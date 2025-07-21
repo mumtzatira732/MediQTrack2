@@ -1,0 +1,425 @@
+$(document).ready(function(){
+
+	$(document).on('click','a.cbox_internal_link',function(e){
+		
+		e.preventDefault();
+		var url = $(this).attr('href');
+
+		$.colorbox({
+			width:"950px", 
+			height:"95%",
+			iframe:true,
+	        href:function(){
+	            //to append the title/name to the url so it can get the title/name and append it to the title of colorbox
+	            href = $('.cbox_internal_link').attr('href');
+	            label = '';
+	            
+	            if($('input[name="label"]').length)
+	            {
+	                label = $('input[name="label"]').val();
+	            }
+	            else if($('input[name="title"]').length)
+	            {
+	                label = $('input[name="title"]').val();
+	            }
+	            else if($('input[name="name"]').length)
+	            {
+	                label = $('input[name="name"]').val();
+	            }
+	
+	            return addParam(url,'name',label);	
+	        }
+	      
+		});
+	});
+	/*
+	$('#link_type').initLinkType();
+	
+	$('#link_type').change(function(){
+		// $(this).updateLinkType();
+		$(this).initLinkType();
+	});
+	*/
+
+});
+
+function get_menu_link(link_type)
+{
+	switch(link_type) // define the link type to store in database
+	{	
+		case 'web': 
+			//$data['link'] = site_url();		// this is homepage link
+			select_value = site_url(''); // Modified by George to attach a slash (/) so that httrack save it as a folder e.g. /index.php/
+		break;
+		
+		case 'base_url': // Added by George, base_url as defined in config.php e.g. "/", "http://epms.vox.com.my/"
+			select_value = base_url();
+		break;
+		
+		case 'rss':	
+			var rss_link = $('#link_url_list').val();
+			select_value = "modules_resources/"+indexPage+"/"+link_type+"/"+rss_link;
+		break;
+		
+		case 'edirectory':
+			var edirectory_link = $('#link_edirectory_list').val();
+			select_value = indexPage+'/'+"edirectory/edirectory_list/"+edirectory_link;
+		break;
+		
+		case 'podcast':	
+			select_value = "modules_resources/"+indexPage+"/"+link_type+"/feed.xml";
+		break;
+		
+		case 'forums':
+		case 'images_gallery/public_albums':
+		case 'knowledge_base/view_category_list':
+        case 'blogs/view_blogs':
+        case 'dashboard':
+        case 'glossary':
+        case 'videos_gallery':
+        case 'sitemap':
+			select_value = indexPage+'/'+link_type;
+		break;
+		
+		case 'database_stores':
+			var database_store_link = $('#link_database_store_list').val();
+			select_value = indexPage+'/'+database_store_link;
+		break;
+				
+		case 'single_sign_on':
+			var sso_link = $('#link_sso_list').val();
+			select_value = indexPage+'/'+sso_link;
+		break;
+		
+		case 'database_stores':
+			var database_store_link = $('#link_database_store_list').val();
+			select_value = indexPage+'/'+database_store_link;
+		break;
+		
+		case 'language':
+			var language_link = $('#language').val();
+			select_value = indexPage+"/multilingual/switch_language/"+language_link;
+		break;
+		
+		case 'mobile_apps':
+			var mobile_app_link = $('#link_mobile_apps_list').val();
+			select_value = (mobile_app_link == '' ? indexPage+"/mobile_apps" : indexPage+"/mobile_apps/mobile_apps_view/"+mobile_app_link);
+		break;
+		
+		case 'announcements':
+			var announcement_id = $('#link_announcement_list').val();
+			select_value = indexPage+'/announcements/view_all/'+announcement_id;
+		break;
+		
+		default:
+			select_value = link_type;
+		break;
+	}
+
+	return select_value;
+}
+
+function select_internal_link(mode)
+{
+	select_value = $('input:radio[name=select_option]:checked').val();	
+	editor = getUrlParam(editorMode); // check isset of editor param in url, it does means is call from editor
+	
+	//Temporary Fix for double index in page links :: TODO:: change in the source of checked radio value link
+	select_value = '/'+select_value;
+
+	if(editor !== null)
+	{
+		if( editorMode === 'ckeditor')
+		{
+			var funcNum = getUrlParam('CKEditorFuncNum' );
+			var msg = '';	
+			
+			if(mode == 'menus')
+			{
+				var link_type = $('#menu_link_type').val();
+					
+				if(link_type != '')
+				{
+					select_value = $('[name=menu_link]').val();
+				}
+			}
+
+			window.opener.CKEDITOR.tools.callFunction(funcNum, select_value , msg);
+			window.close();
+		}
+		else if(editorMode === 'tinymce')
+		{
+			tag_id = $('#hidden_tag_id').val();
+
+			window.opener.document.getElementById(tag_id+"-inp").value=select_value;
+			window.close();
+			window.opener.focus();
+		}
+		else
+		{
+			alert('Editor Mode does not set properly. ');
+		}
+		parent.$.fn.colorbox.close();
+	}
+	else
+	{
+		dashboard_id = get_segment(3);			// for dashbaord module
+		return_id = getUrlParam('return');		// for theme module add layout col background image
+
+		if(/link_url_[0-9]/.test(dashboard_id)==true)
+		{
+			window.parent.$("#"+dashboard_id).val(select_value);
+		
+		}
+		else if(return_id != null)
+		{
+			// it could be call from window popup or iframe.
+			// http://stackoverflow.com/questions/11313045/when-to-use-window-opener-window-parent-window-top
+			if(window.opener !== null)
+				window.opener.$("#"+return_id).val(select_value).change();
+			else
+				window.parent.$("#"+return_id).val(select_value).change();
+			
+			window.close();
+		}
+		else
+		{
+			
+			if(mode == 'menus')
+			{
+				var link_type = $('#link_type').val();
+					
+				if(link_type != '')
+				{
+					select_value = $('[name=menu_link]').val();
+				}
+			}
+				
+			window.parent.$("#link_url").val(select_value);
+		}	
+		parent.$.fn.colorbox.close();
+	}
+	
+	
+}
+
+
+function change_internal_link(mode)
+{
+	module = $('#internal_link_dropdown').val();
+	
+	if( mode == 'tinymce' )
+	{
+		if(editorMode == "tinymce")
+		{
+			tag_id = $('#hidden_tag_id').val();		
+			url = site_url(module+'/'+editorMode+'/'+tag_id);
+			
+		}
+		else
+			url = site_url(module);
+			
+		window.location = url;
+	
+	}
+	else if(  mode == 'ckeditor' )
+	{
+		if(editorMode == "ckeditor")
+		{	
+			var q = document.URL.split('?')[1]; // get query string, in order to ckeditor to work in other url
+			url = site_url(module+'/'+editorMode+'/?'+q);
+		}
+		else
+			url = site_url(module);
+			
+		window.location = url;
+	}
+	else if(  mode == 'none_editor' )
+	{
+		window.location = site_url(module+window.location.search);
+	}
+	else
+	{
+		alert('Editor does not set properly.');
+	}
+}
+
+$.fn.initLinkType = function(){
+	selected = $("#link_type option:selected").val();
+	customField = $('#link_url');
+	buttonField = $('#link_button');
+	pagesButtonField = $('#pages_link_button');
+	rssField = $('#link_url_list');	
+	edirectoryField = $('#link_edirectory_list');
+	databaseStoreField = $('#link_database_store_list');
+	ssoField = $('#link_sso_list');
+	languageField = $('#language'); //get the drop down list id
+	mobileappsField = $('#link_mobile_apps_list');
+	announcementField = $('#link_announcement_list');
+	
+	if(selected=='custom'){
+		customField.show();				
+		buttonField.hide();
+		rssField.hide();
+		edirectoryField.hide();
+		ssoField.hide();
+		pagesButtonField.hide();
+		languageField.hide();
+		databaseStoreField.hide();
+		mobileappsField.hide();
+		announcementField.hide();
+	}
+	else if(selected=='resources'){
+		customField.show();				
+		buttonField.show();
+		rssField.hide();
+		edirectoryField.hide();
+		ssoField.hide();
+		pagesButtonField.hide();
+		languageField.hide();
+		databaseStoreField.hide();
+		mobileappsField.hide();
+		announcementField.hide();
+	}
+	else if(selected=='language'){
+		customField.hide();
+		customField.val('-');
+		buttonField.hide();
+		//show the field
+		languageField.show();
+		ssoField.hide();
+		pagesButtonField.hide();
+		rssField.hide();
+		edirectoryField.hide();
+		databaseStoreField.hide();
+		mobileappsField.hide();
+		announcementField.hide();
+	}
+	else if(selected=='edirectory'){
+		ssoField.hide();
+		edirectoryField.show();
+		customField.hide();				
+		buttonField.hide();
+		rssField.hide();
+		pagesButtonField.hide();
+		languageField.hide();
+		databaseStoreField.hide();
+		mobileappsField.hide();
+		announcementField.hide();
+	}
+	else if(selected=='single_sign_on'){
+		ssoField.show();
+		edirectoryField.hide();
+		customField.hide();				
+		buttonField.hide();
+		rssField.hide();
+		pagesButtonField.hide();
+		languageField.hide();
+		databaseStoreField.hide();
+		mobileappsField.hide();
+		announcementField.hide();
+	}
+	else if(selected=='rss'){
+		ssoField.hide();
+		rssField.show();
+		customField.hide();				
+		buttonField.hide();
+		edirectoryField.hide();
+		pagesButtonField.hide();
+		languageField.hide();
+		databaseStoreField.hide();
+		mobileappsField.hide();
+		announcementField.hide();
+	}
+	else if(selected=='pages'){
+		ssoField.hide();
+		rssField.hide();
+		customField.show();				
+		buttonField.hide();
+		edirectoryField.hide();
+		pagesButtonField.show();
+		languageField.hide();
+		databaseStoreField.hide();
+		mobileappsField.hide();
+		announcementField.hide();
+	}
+	else if(selected=='database_stores'){
+		ssoField.hide();
+		edirectoryField.hide();
+		customField.hide();				
+		buttonField.hide();
+		rssField.hide();
+		pagesButtonField.hide();
+		languageField.hide();
+		databaseStoreField.show();
+		mobileappsField.hide();
+		announcementField.hide();
+	}else if(selected=='mobile_apps'){
+		ssoField.hide();
+		edirectoryField.hide();
+		customField.hide();				
+		buttonField.hide();
+		rssField.hide();
+		pagesButtonField.hide();
+		languageField.hide();
+		databaseStoreField.hide();
+		mobileappsField.show();
+		announcementField.hide();
+	}else if(selected=='announcements'){
+		ssoField.hide();
+		edirectoryField.hide();
+		customField.hide();				
+		buttonField.hide();
+		rssField.hide();
+		pagesButtonField.hide();
+		languageField.hide();
+		databaseStoreField.hide();
+		mobileappsField.hide();
+		announcementField.show();
+	}
+	else{
+		customField.hide();		
+		customField.val('-');				
+		buttonField.hide();
+		rssField.hide();
+		edirectoryField.hide();
+		ssoField.hide();
+		pagesButtonField.hide();
+		languageField.hide();
+		databaseStoreField.hide();
+		mobileappsField.hide();
+		announcementField.hide();
+	}
+};
+
+
+function select_data_mapping(){
+
+	var myvar = $('input:radio[name=select_option]:checked').val();	
+	var arr = myvar.split('|');
+	window.parent.$("#title_mapping").val(arr[0]);
+	window.parent.$("#desc_mapping").val(arr[1]);
+	window.parent.$("#link_type option[value=resources]").attr('selected','selected');
+	window.parent.$("#link_url").css('display','inline-block');
+	window.parent.$("#link_button").css('display','inline');
+	window.parent.$("#link_url").val(arr[2]);
+	parent.$.fn.colorbox.close();
+
+}
+
+function select_page()
+{
+	var myvar = $('input:radio[name=select_option]:checked').val();	
+	var arr = myvar.split('|');
+	window.parent.$(".page-link").html(arr[2]+"  <a href='#' class='cancel'>x</a>");
+	window.parent.$(":input[name=page_link]").val(arr[2]);
+	parent.$.fn.colorbox.close();
+}
+
+function getUrlParam( paramName ) 
+{
+    var reParam = new RegExp( '(?:[\?&]|&)' + paramName + '=([^&]+)', 'i' ) ;
+    var match = window.location.search.match(reParam) ;
+
+    return ( match && match.length > 1 ) ? match[ 1 ] : null ;
+}

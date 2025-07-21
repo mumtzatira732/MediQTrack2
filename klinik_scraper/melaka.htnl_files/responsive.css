@@ -1,0 +1,45 @@
+/*
+	NOTE:
+		Min-Width: Refers to everything greater than or equal to the amount given. 
+		Max-Width: Refers to everything less than or equal to the amount given.
+		
+		PLS UPDATE THIS CSS IS ONLY FOR REPONSIVE METHOD. 
+*/
+
+	/* From large to small */
+
+    /* Large Devices, Wide Screens */
+    @media only screen and (max-width : 1200px) {
+
+    }
+
+    /* Medium Devices, Desktops */
+    @media only screen and (max-width : 992px) {
+
+    }
+
+    /* Small Devices, Tablets */
+    @media only screen and (max-width : 768px) {
+		
+		
+		/* ui tab */
+		.ui-tabs .ui-tabs-nav li {
+			width: 100%;
+		}
+		
+		.ui-tabs .ui-tabs-nav .ui-tabs-anchor {
+			width: inherit;
+		}
+		
+    }
+
+    /* Extra Small Devices, Phones */ 
+    @media only screen and (max-width : 480px) {
+
+    }
+
+    /* Custom, iPhone Retina */ 
+    @media only screen and (max-width : 320px) {
+        
+    }
+	

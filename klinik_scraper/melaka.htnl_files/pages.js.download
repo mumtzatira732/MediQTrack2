@@ -1,0 +1,657 @@
+$(document).ready(function() {
+
+	$(".cbox_page").colorbox({
+		width:"700px",
+		height:"95%",
+		iframe:true
+	});
+
+	$(".cbox_700").colorbox({
+		width:"700px",
+		height:"95%",
+		iframe:true,
+	});
+
+	$(".cbox400").colorbox({
+		width:"400px",
+		height:"350px",
+		iframe:true,
+		onClosed:function(){ location.reload(); }
+	});
+
+	$(".cbox950").colorbox({
+		width:"950px",
+		height:"95%",
+		iframe:true
+	});
+
+	$(".cbox750").colorbox({
+		width:"750px",
+		height:"95%",
+		iframe:true,
+		onClosed:function(){ location.reload(); }
+	});
+
+
+/*** Permission role autocomplete ***/
+	$('#input_target').autocomplete({
+			source: function(request, response) {
+				$.ajax({
+					url: site_url('system/ajax/autocomplete_users_groups2'),
+					data: request,
+					minLength: 2,
+					dataType: "json",
+					type: "POST",
+					success: function(data){
+						$('#input_target').data("autocomplete")._renderItem = function( ul, item ) {
+							return $( "<li></li>" )
+								.data( "item.autocomplete", item )
+								.append( "<a><b>" + item.name + "</b><br><i>" + item.desc + "</i></a>" )
+								.appendTo(ul);
+						};
+						response(data);
+					}
+				});
+			},
+			minLength: 1,
+			focus: function(event, ui) {
+				$('#input_target').val(ui.item.name);
+				return false;
+			},
+			select: function(event, ui) {
+				$('#input_target').val(ui.item.name);
+				$('#input_target').data('item',ui.item);
+				return false;
+			}
+	});
+
+
+	/*** Add New Role in Permission ***/
+	$('#add_target').click(function(){
+		targetValue = $('#input_target').val();
+		if(targetValue=='')
+			return;
+
+		item_list = $('#input_target').data('item');
+		targetId = item_list.id;
+		targetClass = 'target_'+item_list.type;
+		targetName = item_list.name;
+
+		targetItemHtml = '<li><input class="hide" type="checkbox" value="'+targetId+'" name="role_ids[]" checked="checked"/><a rel="'+targetId+'" class="'+targetClass+'">'+targetName+'</a></li>';
+		$('#targets_list').append(targetItemHtml);
+		targetAnchor = $('#targets_list li:last a');
+		targetAnchor.targetAnchorInit();
+
+		permListHtml = $('#permissions_list_template').html();
+		$('#permissions_list_container').append(permListHtml);
+		targetPermList = $('#permissions_list_container .permissions_list:last');
+		targetPermList.attr('id',targetId);
+		targetPermList.find('input').attr('name',targetId+'[]');
+		targetAnchor.click();
+
+		//unset
+		$('#input_target').val('')
+		$('#input_target').data('item','')
+	});
+
+	$('#remove_target').click(function(){
+		target = $('#targets_list_container .highlight');
+		targetContainer = target.parents('li');
+		permissionsId = target.attr('rel');
+		permissionsContainer = $('#permissions_list_container').find('#'+permissionsId);
+
+		targetContainer.remove();
+		permissionsContainer.remove();
+		$('#remove_target').attr('disabled',true);
+	});
+
+
+	$.fn.targetAnchorInit = function(){
+		$(this).click(function(){
+			$('#targets_list .highlight').removeClass('highlight');
+			$(this).addClass('highlight');
+			selected = $(this).attr('rel');
+			$('.permissions_list').hide();
+			$('#'+selected).show();
+			$('#remove_target').attr('disabled',false);
+		});
+	}
+
+	$('#targets_list a').targetAnchorInit();
+
+
+	if(jQuery().tagsInput )
+	{
+		$('#tags').tagsInput({
+			width : '50%',
+			autocomplete_url : site_url('pages/autocomplete_tags')
+
+		});
+	}
+
+	$('#tags_tag').keydown(function(event) {
+        if (event.keyCode == 13) {
+			$( "#tags_tag" ).autocomplete( "close" );
+        }
+    });
+
+	$('.view_link, .edit_link').click(function(){
+
+		var open = $(this);
+		var link = open.attr('href')
+		window.open(link, '_blank');
+		return false;
+	});
+
+	$('#chkall-option').click(function (){
+		$('.page-option').attr("checked", this.checked);
+	});
+
+	if(jQuery().dataTable)
+	{
+		lang_key = get_lang_key('system', 'system');
+
+		var pageTable = $('.ajax-table').dataTable({
+			"bAutoWidth": false,
+			"bJQueryUI": false,
+			"bSort": true,
+			"aaSorting": [],
+			"iDisplayLength": 25,
+			"sPaginationType": "full_numbers",
+			"bStateSave": true,
+			"bLengthChange": true,
+			"bFilter": true,
+			"bProcessing": true,
+			"bServerSide": true,
+			"sAjaxSource": site_url("pages/load_pages"),
+			"sServerMethod": "POST",
+			"language": {
+			  "sLoadingRecords": "<div class='loading'></div>",
+			  "sProcessing": "<div class='loading'></div>",
+			  "paginate": {				 
+				  "previous": lang_key.MODULE_DATATABLE_PAGINATE_PREVIOUS_LBL,
+				  "first": lang_key.MODULE_DATATABLE_PAGINATE_FIRST_LBL,
+				  "next": lang_key.MODULE_DATATABLE_PAGINATE_NEXT_LBL,
+				  "last": lang_key.MODULE_DATATABLE_PAGINATE_LAST_LBL,
+				},  
+				 "search": lang_key.MODULE_DATATABLE_SEARCH_LBL,
+				 "searchPlaceholder": lang_key.MODULE_DATATABLE_SEARCH_PLACEHOLDER_LBL,
+				 "info": lang_key.MODULE_DATATABLE_INFO_LBL,
+				 "infoEmpty": lang_key.MODULE_DATATABLE_EMPTY_INFO_LBL,
+				  "emptyTable": lang_key.MODULE_DATATABLE_EMPTY_LBL,
+				  "infoFiltered": lang_key.MODULE_DATATABLE_INFO_FILTER_LBL,
+				  "lengthMenu": lang_key.MODULE_DATATABLE_LENGTH_LBL,
+				  "zeroRecords": lang_key.MODULE_DATATABLE_ZERO_RECORD_LBL,
+				  "processing": lang_key.MODULE_DATATABLE_PROCESSING_LBL,
+				  "loadingRecords": lang_key.MODULE_DATATABLE_LOADINGRECORDS_LBL,
+			},
+			"aoColumnDefs": [
+				{ "bSortable": false, "aTargets": [ 'sort_none' ] },
+				{ "sClass": "thin", "aTargets": [ 7,8,9,10,11,12,13  ] }
+			],
+			"fnInitComplete": function() {
+				datatable_action_button(pageTable);
+			}
+		});
+
+		var pageDraftTable = $('.ajax-table-draft').dataTable({
+			"bAutoWidth": false,
+			"bJQueryUI": false,
+			"bSort": true,
+			"aaSorting": [],
+			"iDisplayLength": 25,
+			"sPaginationType": "full_numbers",
+			"bStateSave": true,
+			"bLengthChange": true,
+			"bFilter": true,
+			"bProcessing": true,
+			"bServerSide": true,
+			"sAjaxSource": site_url("pages/load_draft_pages"),
+			"sServerMethod": "POST",
+			"language": {
+			  "sLoadingRecords": "<div class='loading'></div>",
+			  "sProcessing": "<div class='loading'></div>",
+			  "paginate": {				 
+				  "previous": lang_key.MODULE_DATATABLE_PAGINATE_PREVIOUS_LBL,
+				  "first": lang_key.MODULE_DATATABLE_PAGINATE_FIRST_LBL,
+				  "next": lang_key.MODULE_DATATABLE_PAGINATE_NEXT_LBL,
+				  "last": lang_key.MODULE_DATATABLE_PAGINATE_LAST_LBL,
+				},  
+				 "search": lang_key.MODULE_DATATABLE_SEARCH_LBL,
+				 "searchPlaceholder": lang_key.MODULE_DATATABLE_SEARCH_PLACEHOLDER_LBL,
+				 "info": lang_key.MODULE_DATATABLE_INFO_LBL,
+				 "infoEmpty": lang_key.MODULE_DATATABLE_EMPTY_INFO_LBL,
+				  "emptyTable": lang_key.MODULE_DATATABLE_EMPTY_LBL,
+				  "infoFiltered": lang_key.MODULE_DATATABLE_INFO_FILTER_LBL,
+				  "lengthMenu": lang_key.MODULE_DATATABLE_LENGTH_LBL,
+				  "zeroRecords": lang_key.MODULE_DATATABLE_ZERO_RECORD_LBL,
+				  "processing": lang_key.MODULE_DATATABLE_PROCESSING_LBL,
+				  "loadingRecords": lang_key.MODULE_DATATABLE_LOADINGRECORDS_LBL,
+			},
+			"aoColumnDefs": [
+				{ "bSortable": false, "aTargets": [ 'sort_none' ] },
+				{ "sClass": "thin", "aTargets": [ 6,7,8,9,10,11,12  ] }
+			],
+			"fnInitComplete": function() {
+				datatable_action_button(pageDraftTable);
+			}
+		});
+
+		var pageArchiveTable = $('.ajax-table-archive').dataTable({
+			"bAutoWidth": false,
+			"bJQueryUI": false,
+			"bSort": true,
+			"aaSorting": [],
+			"iDisplayLength": 25,
+			"sPaginationType": "full_numbers",
+			"bStateSave": true,
+			"bLengthChange": true,
+			"bFilter": true,
+			"bProcessing": true,
+			"bServerSide": true,
+			"sAjaxSource": site_url("pages/load_archive_pages/"+get_segment(3)),
+			"sServerMethod": "POST",
+			"language": {
+			  "sLoadingRecords": "<div class='loading'></div>",
+			  "sProcessing": "<div class='loading'></div>",
+			  "paginate": {				 
+				  "previous": lang_key.MODULE_DATATABLE_PAGINATE_PREVIOUS_LBL,
+				  "first": lang_key.MODULE_DATATABLE_PAGINATE_FIRST_LBL,
+				  "next": lang_key.MODULE_DATATABLE_PAGINATE_NEXT_LBL,
+				  "last": lang_key.MODULE_DATATABLE_PAGINATE_LAST_LBL,
+				},  
+				 "search": lang_key.MODULE_DATATABLE_SEARCH_LBL,
+				 "searchPlaceholder": lang_key.MODULE_DATATABLE_SEARCH_PLACEHOLDER_LBL,
+				 "info": lang_key.MODULE_DATATABLE_INFO_LBL,
+				 "infoEmpty": lang_key.MODULE_DATATABLE_EMPTY_INFO_LBL,
+				  "emptyTable": lang_key.MODULE_DATATABLE_EMPTY_LBL,
+				  "infoFiltered": lang_key.MODULE_DATATABLE_INFO_FILTER_LBL,
+				  "lengthMenu": lang_key.MODULE_DATATABLE_LENGTH_LBL,
+				  "zeroRecords": lang_key.MODULE_DATATABLE_ZERO_RECORD_LBL,
+				  "processing": lang_key.MODULE_DATATABLE_PROCESSING_LBL,
+				  "loadingRecords": lang_key.MODULE_DATATABLE_LOADINGRECORDS_LBL,
+			},
+			"aoColumnDefs": [
+				{ "bSortable": false, "aTargets": [ 'sort_none' ] },
+				{ "sClass": "thin", "aTargets": [ 6,7,8,9,10,11,12  ] }
+			],
+			"fnInitComplete": function() {
+				datatable_action_button(pageArchiveTable);
+
+				$(".cbox_page").colorbox({
+					width:"800px",
+					height:"95%",
+					iframe:true
+				});
+			}
+
+		});
+
+		var pageTrashTable = $('.ajax-table-trash').dataTable({
+			"bAutoWidth": false,
+			"bJQueryUI": false,
+			"bSort": true,
+			"aaSorting": [],
+			"iDisplayLength": 25,
+			"sPaginationType": "full_numbers",
+			"bStateSave": true,
+			"bLengthChange": true,
+			"bFilter": true,
+			"bProcessing": true,
+			"bServerSide": true,
+			"sAjaxSource": site_url("pages/load_trash_pages"),
+			"sServerMethod": "POST",
+			"language": {
+			  "sLoadingRecords": "<div class='loading'></div>",
+			  "sProcessing": "<div class='loading'></div>",
+			  "paginate": {				 
+				  "previous": lang_key.MODULE_DATATABLE_PAGINATE_PREVIOUS_LBL,
+				  "first": lang_key.MODULE_DATATABLE_PAGINATE_FIRST_LBL,
+				  "next": lang_key.MODULE_DATATABLE_PAGINATE_NEXT_LBL,
+				  "last": lang_key.MODULE_DATATABLE_PAGINATE_LAST_LBL,
+				},  
+				 "search": lang_key.MODULE_DATATABLE_SEARCH_LBL,
+				 "searchPlaceholder": lang_key.MODULE_DATATABLE_SEARCH_PLACEHOLDER_LBL,
+				 "info": lang_key.MODULE_DATATABLE_INFO_LBL,
+				 "infoEmpty": lang_key.MODULE_DATATABLE_EMPTY_INFO_LBL,
+				  "emptyTable": lang_key.MODULE_DATATABLE_EMPTY_LBL,
+				  "infoFiltered": lang_key.MODULE_DATATABLE_INFO_FILTER_LBL,
+				  "lengthMenu": lang_key.MODULE_DATATABLE_LENGTH_LBL,
+				  "zeroRecords": lang_key.MODULE_DATATABLE_ZERO_RECORD_LBL,
+				  "processing": lang_key.MODULE_DATATABLE_PROCESSING_LBL,
+				  "loadingRecords": lang_key.MODULE_DATATABLE_LOADINGRECORDS_LBL,
+			},
+			"aoColumnDefs": [
+				{ "bSortable": false, "aTargets": [ 'sort_none' ] },
+				{ "sClass": "thin", "aTargets": [ 6,7,8  ] }
+			],
+			"fnInitComplete": function() {
+				datatable_action_button(pageArchiveTable);
+
+				$(".cbox_page").colorbox({
+					width:"800px",
+					height:"95%",
+					iframe:true
+				});
+			}
+
+		});
+	}
+
+	$('#select-month').change(function() {
+
+		var value = this.value;
+
+		if($(this).hasClass('view_archive'))
+			window.location = site_url("pages/view_archives/"+value);
+		else
+			window.location = site_url("pages/archive/"+value);
+	});
+
+	$('#change').change(function(event){
+
+		language = $( "#change" ).val();
+		siteUrl = site_url('pages/change_language');
+
+		$.ajax({
+			url: siteUrl,
+			type: "post",
+			data: {
+			'language' : language,
+			},
+			async: false,
+			success: function (data){
+				location.reload();
+			}
+		});
+	});
+
+
+	/* ---------------------------------- menu select ----------------------------- */
+
+
+	$('.wrapper-dropdown-1').closest('#container_content_full').css('overflow-x','visible');
+	$('.wrapper-dropdown-1 .select-dropdown').click(function() {
+		$('.dropdown').toggle('show');
+	});
+
+	if(jQuery().treeview)
+	{
+		$('#treeview_browser').treeview({collapsed: true,});
+	}
+
+    if(jQuery().powerTip)
+	{
+        $('.add_menu_tips').css('cursor','pointer');
+        $('.add_menu_tips').data('powertip', 'Add into this menu');
+        $('.add_menu_tips').powerTip({ followMouse: true });
+    }
+
+	$('.add_menu_tips').click(function(e){
+		e.preventDefault();
+		var label = $(this).html();
+		var group_id = $(this).data('group');
+		var parent_id = $(this).data('parent');
+
+		$('.wrapper-dropdown-1 .select-label').html(label);
+		$('#menu_group').val(group_id);
+		$('#menu_parent').val(parent_id);
+		$('.dropdown').hide();
+		//alert('group:'+group_id+' , parent:'+parent_id);
+	});
+
+
+	if($('#add_to_menu').is(":checked"))
+		$('#treedropdown').show();
+	else
+		$('#treedropdown').hide();
+
+	$('#add_to_menu').on('change', function() {
+
+		if($('#add_to_menu').is(":checked"))
+		{
+			$('#treedropdown').show();
+		}
+		else
+		{
+			$('#treedropdown').hide();
+		}
+
+	});
+
+	$('#preview_button').click(function(){
+		  $("#form_edit , #form_add").attr("action", site_url('pages/preview'));
+		  $("#form_edit , #form_add").attr('target', '_blank').submit();
+	});
+
+	$('#save,#draft,#save_and_close').click(function(){
+		form_url = window.location.href;
+		$("#form_edit , #form_add").attr("target", '');
+		$("#form_edit , #form_add").attr("action", form_url);
+	});
+
+	/* ---------------------------------- end menu select ----------------------------- */
+
+
+	/* ---------------------------------- auto save draft ----------------------------- */
+
+	var timer;
+
+	// check ckeditor event for when user typing
+	if( typeof(CKEDITOR) !== "undefined" )
+	{
+		// for editor, Notice the ckeditor textare name must body.
+		CKEDITOR.on( 'currentInstance', function( event ) {   // check current editor is invoker some event and perform save draft function
+			editor = CKEDITOR.currentInstance;
+			if(editor != null)
+			{
+				editor.document.on('keyup', function(event) {
+					save();
+				});
+
+				editor.on( 'change', function() {
+					save();
+				});
+
+				function save() {
+
+					clearTimeout(timer); // clear previous event fire.
+					var form = $('#form_add, #form_edit'),
+						pageId = form.data('pageid'),
+						formData = form.serializeArray();
+						formData.push({name: "draft", value: 1});
+					var pageName = $('input[name=name]').val();	//added by Shero on 20170719 to set default page name when empty name
+					if(pageName === ''){
+						formData.push({name: "name", value: 'Untitle'});
+						formData.push({name: "description", value: 'This page is save by auto save'});
+					}
+					// replace body value
+					for (var item in formData)
+					{
+						if (formData[item].name == 'body') {
+							//formData[item].value = editor.getData();
+							formData[item].value = CKEDITOR.instances.body.getData()
+						}
+					}
+
+					// after typing 2 sec then save it
+					timer = setTimeout(function (event) {
+
+						if(pageId != 0) // if have page id means it is a edit page
+							formUrl = site_url('pages/save/'+pageId);
+						else
+							formUrl = site_url('pages/save');
+
+						$.ajax({
+							url: formUrl,
+							type: "POST",
+							data: formData,
+							dataType: 'json',
+							success: function (data)
+							{
+								form.data('pageid',data.id);
+								form.attr('data-pageid',data.id);
+								// editor.insertHtml(data.body); // replace the body content after auto save.
+
+								  $('#auto_save').html("Draft auto saved successfully").fadeIn('slow');
+								  $('#auto_save').delay(3000).fadeOut('slow');
+							}
+
+						});
+					}, 2000);
+
+				}
+			}
+		});
+	}
+
+
+
+	// discard the page that auto saved draft
+	$('[data-action=discard_page]').click(function (e) {
+		e.preventDefault(); console.log('cancel');
+		var form = $(this).closest('form'),
+			pageId = form.data('pageid'),
+			formData = $(this).closest('form').serializeArray();
+
+		if(pageId != 0 || pageId != '')
+		{
+			$.ajax({
+				url: site_url('pages/discard/'+pageId),
+				type: "POST",
+				data: formData,
+				success: function (r)
+				{
+					if(r == 1)
+					window.location = site_url('pages');
+				}
+			});
+		}
+		else
+			window.location = site_url('pages');
+
+	});
+
+	/* ------------------------------ end auto save draft ---------------------------------- */
+
+	load_tag_block();
+});
+
+//call by admin edit page in fontend onclick()
+function edit(){
+	$('.editable').css('display','none');
+	$('.editor').css('display','block');
+	$('.editor table, iframe').css('width','100%');
+
+	//inline edit page title
+	$('.page-title').html('<input type="text" id="page_name" value="'+$('.page-title').text().trim()+'" style="width:100%;" />');
+}
+
+function save(mode)
+{
+	var actionUrl = site_url('pages/edit_in_place');
+	var id = $("textarea").attr('id');
+	var page_name = $('#page_name').val();
+
+	if(mode == 'tinymce')
+		var value = tinymce.get(id).getContent();
+	else if(mode == 'ckeditor')
+		var value = CKEDITOR.instances[id].getData();
+	else
+	{
+		alert('Editor Mode does not set properly. ');
+		return false;
+	}
+
+	$.ajax({
+		url: actionUrl,
+		type: "POST",
+		data: {content:value,name:page_name,id:id},
+		dataType: "json",
+		success: function(data){
+
+			$('.editable').html(data);
+
+			$('audio,video').mediaelementplayer({
+				success: function(player, node) {
+					$('#' + node.id + '-mode').html('mode: ' + player.pluginType);
+				}
+			});
+
+			$('.editable').css('display','block');
+			$('.editor').css('display','none');
+
+			//reset the page title
+			$('.page-title').html('<h1>'+page_name+'</h1>');
+		}
+
+	});
+
+}
+
+
+function cancel()
+{
+	$('.editable').css('display','block');
+	$('.editor').css('display','none');
+
+	//reset the page title
+	$('.page-title').html('<h1>'+$('#page_name').val()+'</h1>');
+}
+
+function load_tag_block()
+{
+	$('.tag-block').html('<div class="loading"></div>');
+	var url = window.location.pathname;
+	url = url.split("/");
+	url = url[4];
+	if(typeof url == "undefined")
+		url = 'pages';
+	$.getJSON(site_url('pages/load_tags/'+url),function(data){
+		$('.tag-block').html('');
+		$.each(data, function(  i, val){
+			$('.tag-block').append(val);
+		});
+	});
+
+}
+
+function init_tag_group_pagination(count,display,div){
+	$(".jPaginate").paginate({
+		count 		: count,
+		start 		: 1,
+		display     : display,
+		border					: false,
+		text_color  			: '#79B5E3',
+		background_color    	: 'none',
+		text_hover_color  		: '#2573AF',
+		background_hover_color	: 'none',
+		images		: false,
+		mouse		: 'press',
+		onChange    : function(page){
+			$('._current','#paginationdiv').removeClass('_current').hide();
+			$('#page_'+page).addClass('_current').show();
+
+			if(div != "")
+			{
+				//auto scroll to top every time click next page
+				$('html,body').animate({scrollTop: $(div).offset().top},'slow');
+			}
+		}
+	});
+}
+
+
+//save the page hit and append the page hit view in the page
+function save_page_hit(page_id,enable_page_hit){
+
+    $.ajax({
+        url: site_url('pages/save_page_hit'),
+        type: "POST",
+        data:{ 'page_id' : page_id,'enable_page_hit' : enable_page_hit},
+        success: function (data){
+               $('[data-id="page_view"]').html(data);
+        }
+    });
+
+}

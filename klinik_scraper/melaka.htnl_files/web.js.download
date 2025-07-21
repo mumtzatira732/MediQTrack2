@@ -1,0 +1,611 @@
+//Fallback function if site_url() function not found in init.js in heavy use case scenario
+/* Commented out by George on 20210323 for 3 reasons:
+        1. Do NOT hardcord index.php bcos it can be a microsite using <instance>.php.
+        2. If site is heavily loaded then find out the root cause and solve it.
+        3. We need a permenant solution then a workaround, no quick patch!
+function site_url(url){
+
+	var full_url = window.location.href;
+	var segments = full_url.split('index.php');
+	var indexPath = segments[0];
+
+	if (url) {
+		indexPath = indexPath+'index.php/'+url;	
+	}
+	return indexPath;
+}
+*/
+
+$(document).ready(function(){
+
+	log_page_hit();
+
+	/* Fixed colorbox w3c button empty value */
+	$("#cboxPrevious").html('<');
+	$("#cboxNext").html('>');
+	$("#cboxSlideshow").html('|');
+	
+	lang_key = get_lang_key('system', 'system');
+
+	/* Commented out by George on 20200416 to investigate whether this dataTable (dt_page) is needed here.*/
+    // if(jQuery().dataTable)
+	// {
+    //     var oTable = $('.dt_page').dataTable({
+    //         "autoWidth": false,
+    //         "jQueryUI": false,
+    //         "ordering": true,
+    //         "order": [],
+    //         "pageLength": 25,
+    //         "pagingType": "full_numbers",
+    //         "stateSave": true,
+    //         "lengthChange": true,
+    //         "searching": true,
+	// 		"language": {
+	// 		  "sLoadingRecords": "<div class='loading'></div>",
+	// 		  "sProcessing": "<div class='loading'></div>",
+	// 		  "paginate": {				 
+	// 			  "previous": lang_key.MODULE_DATATABLE_PAGINATE_PREVIOUS_LBL,
+	// 			  "first": lang_key.MODULE_DATATABLE_PAGINATE_FIRST_LBL,
+	// 			  "next": lang_key.MODULE_DATATABLE_PAGINATE_NEXT_LBL,
+	// 			  "last": lang_key.MODULE_DATATABLE_PAGINATE_LAST_LBL,
+	// 			},  
+	// 			 "search": lang_key.MODULE_DATATABLE_SEARCH_LBL,
+	// 			 "searchPlaceholder": lang_key.MODULE_DATATABLE_SEARCH_PLACEHOLDER_LBL,
+	// 			 "info": lang_key.MODULE_DATATABLE_INFO_LBL,
+	// 			  "emptyTable": lang_key.MODULE_DATATABLE_EMPTY_LBL,
+	// 			  "infoFiltered": lang_key.MODULE_DATATABLE_INFO_FILTER_LBL,
+	// 			  "lengthMenu": lang_key.MODULE_DATATABLE_LENGTH_LBL,
+	// 			  "zeroRecords": lang_key.MODULE_DATATABLE_ZERO_RECORD_LBL,
+	// 			  "processing": lang_key.MODULE_DATATABLE_PROCESSING_LBL,
+	// 			  "loadingRecords": lang_key.MODULE_DATATABLE_LOADINGRECORDS_LBL,
+	// 		},
+    //         "columnDefs": [
+    //             { // prevent ordering on the Amount column
+    //                 "targets": "sort_none","orderable": false
+    //             },
+    //             {
+    //                 "targets": "thin","className": "thin"
+    //             }
+    //         ]
+    //     });
+    // }
+
+
+	date_format_script();
+    generate_tabs(".sys-tabs");
+
+    $("input:text, input:checkbox, input:radio, input:password, textarea, select").addClass('input');
+
+    // jquery ui button
+	$(".button").button();
+
+	// jquery ui button with icon
+	var icon = $(".button-icon").data('icon') || ''; // icon is according to jquery ui API
+	var iconOnly = $(".button-icon").data('text') == undefined ? true : $(".button-icon").data('text'); // to set icon with text in button
+	$(".button-icon").button({
+		icons: {
+			primary: icon
+		},
+		text: iconOnly,
+	});
+
+	// load background
+	$.ajax({
+		url: site_url('themes/load_cms_background'),
+		type: 'POST',
+		dataType: 'json',
+		success: function(data){
+
+			//Apply background image only if returned data is not empty
+			if(data.length != 0){
+
+				//added "Website grey filter" which need to add filter in body, but this css would't affect the backgroud in same tag, which need to separate in different div so, modified to add css in #web_layout_homepage instead of #body_web .
+				$('#body_web #web_layout_homepage').css('background-image','url('+data.image_path+data.background_image+')');
+				$('#body_web #web_layout_homepage').css('background-repeat',data.background_repeat);
+				$('#body_web #web_layout_homepage').css('background-position',data.background_position);
+				$('#body_web #web_layout_homepage').css('background-attachment',data.background_attachment);
+				$('#body_web #web_layout_homepage').css('background-size',data.background_size);
+				$('#body_web #web_layout_homepage').css('background-size',data.background_size);
+				$('#body_web #web_layout_homepage').css('min-height','100%');
+
+				if(data.background_transparent == true){
+					$('#body_web #web_layout_homepage').css('background-color','none');
+				} else {
+					$('#body_web #web_layout_homepage').css('background-color',data.background_color);
+				}
+			
+			}
+		}
+	});
+
+	var isEditTemplate = $('body').data('template') || '';
+	if(isEditTemplate === '') // check it is edit template page
+	{
+		// remove useable class in frontend
+		$('*').removeClass('drag').removeClass('hover-desc').removeClass('dummy-content');
+	}
+
+    //tabSlideOut not support open 1 tab then close 1 tab, following script is make it support
+    //use for slide out tab block, if click the open tab, close the tab else if click the close tab, close the open tab and open the close tab
+     if(jQuery().tabSlideOut) {
+        $('.handle').click(function(){
+            if(!($(this).parent().hasClass('open')))
+                $('.open').next().click();
+        });
+    }
+
+	$('.page_load_hide').each(function(){
+		$(this).removeClass('page_load_hide');
+	});
+
+	if(window.CKEDITOR)
+	{
+		// inline edit
+		CKEDITOR.disableAutoInline = true;
+
+		$('div.inline-editable').data('powertip', 'Double click for edit.');
+
+		if(jQuery().powerTip)
+		{
+			$('div.inline-editable').powerTip({ followMouse: true });
+		}
+
+		$("div.inline-editable" ).dblclick(function( index ) {
+
+			var edit_elem = $(this);
+			var type = $(this).data('type');
+			var block_id = $(this).attr('id');
+			var id = block_id.replace('edit_', '');
+			// var content = $(this).html();
+			var content = $.ajax({
+								url: site_url('blocks/get_block_html_content'),
+								type: "POST",
+								data: { 'block_id' : id },
+								async: false
+							}).responseText;
+							
+			var editorForm = $('#editForm');
+
+			if(editorForm.length == 0)
+			{
+				$('body').prepend('<div id="edit-field" style="position: fixed;width: 50%;z-index: 10000;top: 10%;left: 25%;"><div id="editForm"><textarea id="inlineEdit">'+content+'</textarea><button class="button" id="editSave">Save</button><button class="button" id="cancelSave">Cancel</button><button class="button" id="editPage" style="float:right;">Edit in page</button></div></div>');
+				$('#cboxOverlay').show();
+
+				var ed = CKEDITOR.replace('inlineEdit', {
+							allowedContent: true,
+							filebrowserBrowseUrl: site_url('file_manager/browse_resources_record_check/browse_link'),
+							filebrowserImageBrowseUrl: site_url('file_manager/browse_resources_record_check/browse_images'),
+							filebrowserFlashBrowseUrl: site_url('file_manager/browse_resources_record_check/browse_media'),
+							filebrowserWindowWidth: '1000',
+							filebrowserWindowHeight: '700',
+							startupFocus:true,
+						});
+
+
+				$(".button").button();
+
+
+				$('#cancelSave').on('click', function() {
+					$('#cboxOverlay').hide();
+					$('#edit-field').remove();
+				});
+
+				$('#editPage').on('click', function() {
+					// when edit block html content in page
+					window.location = site_url('blocks/html_settings/'+id+'?back='+window.location.href);
+				})
+
+				$('#editSave').on('click', function() {
+					var data = ed.getData();
+					// console.log(data);
+					if(type == 'blocks')
+					{
+						$.ajax({
+							url: site_url("blocks/inline_edit"),
+							type: "POST",
+							data: {
+								content : data,
+								block_id : id,
+							},
+							dataType: "html",
+							success: function (d) {
+								console.log(d);
+								$('#'+block_id).html(d);
+
+								$('#cboxOverlay').hide();
+								$('#edit-field').remove();
+
+								$('.save_box').remove();
+								$('body').append('<p class="save_box"> Content is Saved </p>');
+								$('.save_box').delay(2000).slideUp();
+
+							}
+						});
+					}
+
+				});
+			}
+			else
+			{
+				console.log('#edit-field should be remove');
+			}
+		});
+
+	}
+
+	//generate alt tag for image
+	$('img').each(function(){
+		if(!$(this).attr('alt'))
+			$(this).attr('alt','image');
+	});
+	
+	/*
+		function: For implementor to create colorbox with simply class and attribute setup
+		attributes:
+			*data-width="80%" OR data-width="700px" by add this attribute to a tag, system will generate the width wanted for colorbox
+			*data-height="80%" OR data-width="700px" by add this attribute to a tag, system will generate the height wanted for colorbox
+			*data-type="inline" OR data-type="iframe" by add this attribute to determine this colorbox using inline html content or iframe content
+			*href="#id" OR href="http://www.test.com" using href to control display which inline html content or which url use for iframe
+	*/
+	$(document).on('click','.front-end-colorbox',function(event){
+		event.preventDefault();
+		
+		type = $(this).attr('data-type');
+		href = $(this).attr('href');
+		width = $(this).attr('data-width');
+		height = $(this).attr('data-height');
+
+		if( width == null )
+			width = "50%";
+		
+		if( height == null )
+			height = "50%";
+		
+		if( type == null )
+			type = "inline";
+		
+		if( type == "iframe" )
+		{
+			//append maximize button when open colorbox
+			$.colorbox({
+				'width':width, 
+				'height':height,
+				'iframe':true, 
+				'href':href,
+				onOpen: function(){
+					$('#cboxContent').append('<button type="button" id="frontendcboxMaximize" data-width="'+width+'" data-height="'+height+'" data-status="maximize">maximize</button>');
+				
+				
+				},
+				onClosed: function(){
+					$('#frontendcboxMaximize').remove();
+				}
+			});
+		}
+		else
+		{
+			//apend maximize button when open colorbox
+			$.colorbox({
+				'width':width, 
+				'height':height,
+				'inline':true, 
+				'href':href,
+				onOpen: function(){
+					$('#cboxContent').append('<button type="button" id="frontendcboxMaximize" data-width="'+width+'" data-height="'+height+'" data-status="maximize">maximize</button>');
+				},
+				onClosed: function(){
+					$('#frontendcboxMaximize').remove();
+				}
+			});
+
+		}
+
+	});
+	
+	//extend function for colorobx to maximize and minimize function
+	$(document).on("click","#frontendcboxMaximize",function() {
+		
+		var status = $(this).attr('data-status');
+		width = $(this).attr('data-width');
+		height= $(this).attr('data-height');
+		
+		if( status == 'maximize' )
+		{
+			window.parent.$.colorbox.resize({'width':"90%",'height':"90%"});
+			$(this).css('background','url(assets/shared/images/admin/colorbox_min_max.png) no-repeat -48px 0');
+			$(this).attr('data-status','minimize');
+		}
+		else
+		{
+			window.parent.$.colorbox.resize({'width':width,'height':height});
+			$(this).css('background','url(assets/shared/images/admin/colorbox_min_max.png) no-repeat -25px 0');
+			$(this).attr('data-status','maximize');
+		}
+		
+	});
+});
+
+function urlParam(url,name)
+{
+	var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(url);
+	if (results==null){
+	   return null;
+	}
+	else{
+	   return results[1] || 0;
+	}
+}
+
+// Simulates PHP's date function to change the date format of javascript
+// example usage  var myDate = new Date(); alert(myDate.format('M jS, Y');
+// source : https://github.com/jacwright/date.format
+
+function date_format_script()
+{
+
+	Date.prototype.format = function(format) {
+		var returnStr = '';
+		var replace = Date.replaceChars;
+		for (var i = 0; i < format.length; i++) {       var curChar = format.charAt(i);         if (i - 1 >= 0 && format.charAt(i - 1) == "\\") {
+				returnStr += curChar;
+			}
+			else if (replace[curChar]) {
+				returnStr += replace[curChar].call(this);
+			} else if (curChar != "\\"){
+				returnStr += curChar;
+			}
+		}
+		return returnStr;
+	};
+
+	Date.replaceChars = {
+		shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+		longMonths: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+		shortDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+		longDays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+
+		// Day
+		d: function() { return (this.getDate() < 10 ? '0' : '') + this.getDate(); },
+		D: function() { return Date.replaceChars.shortDays[this.getDay()]; },
+		j: function() { return this.getDate(); },
+		l: function() { return Date.replaceChars.longDays[this.getDay()]; },
+		N: function() { return this.getDay() + 1; },
+		S: function() { return (this.getDate() % 10 == 1 && this.getDate() != 11 ? 'st' : (this.getDate() % 10 == 2 && this.getDate() != 12 ? 'nd' : (this.getDate() % 10 == 3 && this.getDate() != 13 ? 'rd' : 'th'))); },
+		w: function() { return this.getDay(); },
+		z: function() { var d = new Date(this.getFullYear(),0,1); return Math.ceil((this - d) / 86400000); }, // Fixed now
+		// Week
+		W: function() { var d = new Date(this.getFullYear(), 0, 1); return Math.ceil((((this - d) / 86400000) + d.getDay() + 1) / 7); }, // Fixed now
+		// Month
+		F: function() { return Date.replaceChars.longMonths[this.getMonth()]; },
+		m: function() { return (this.getMonth() < 9 ? '0' : '') + (this.getMonth() + 1); },
+		M: function() { return Date.replaceChars.shortMonths[this.getMonth()]; },
+		n: function() { return this.getMonth() + 1; },
+		t: function() { var d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 0).getDate() }, // Fixed now, gets #days of date
+		// Year
+		L: function() { var year = this.getFullYear(); return (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0)); },   // Fixed now
+		o: function() { var d  = new Date(this.valueOf());  d.setDate(d.getDate() - ((this.getDay() + 6) % 7) + 3); return d.getFullYear();}, //Fixed now
+		Y: function() { return this.getFullYear(); },
+		y: function() { return ('' + this.getFullYear()).substr(2); },
+		// Time
+		a: function() { return this.getHours() < 12 ? 'am' : 'pm'; },
+		A: function() { return this.getHours() < 12 ? 'AM' : 'PM'; },
+		B: function() { return Math.floor((((this.getUTCHours() + 1) % 24) + this.getUTCMinutes() / 60 + this.getUTCSeconds() / 3600) * 1000 / 24); }, // Fixed now
+		g: function() { return this.getHours() % 12 || 12; },
+		G: function() { return this.getHours(); },
+		h: function() { return ((this.getHours() % 12 || 12) < 10 ? '0' : '') + (this.getHours() % 12 || 12); },
+		H: function() { return (this.getHours() < 10 ? '0' : '') + this.getHours(); },
+		i: function() { return (this.getMinutes() < 10 ? '0' : '') + this.getMinutes(); },
+		s: function() { return (this.getSeconds() < 10 ? '0' : '') + this.getSeconds(); },
+		u: function() { var m = this.getMilliseconds(); return (m < 10 ? '00' : (m < 100 ?
+	'0' : '')) + m; },
+		// Timezone
+		e: function() { return "Not Yet Supported"; },
+		I: function() {
+			var DST = null;
+				for (var i = 0; i < 12; ++i) {
+						var d = new Date(this.getFullYear(), i, 1);
+						var offset = d.getTimezoneOffset();
+
+						if (DST === null) DST = offset;
+						else if (offset < DST) { DST = offset; break; }                     else if (offset > DST) break;
+				}
+				return (this.getTimezoneOffset() == DST) | 0;
+			},
+		O: function() { return (-this.getTimezoneOffset() < 0 ? '-' : '+') + (Math.abs(this.getTimezoneOffset() / 60) < 10 ? '0' : '') + (Math.abs(this.getTimezoneOffset() / 60)) + '00'; },
+		P: function() { return (-this.getTimezoneOffset() < 0 ? '-' : '+') + (Math.abs(this.getTimezoneOffset() / 60) < 10 ? '0' : '') + (Math.abs(this.getTimezoneOffset() / 60)) + ':00'; }, // Fixed now
+		T: function() { var m = this.getMonth(); this.setMonth(0); var result = this.toTimeString().replace(/^.+ \(?([^\)]+)\)?$/, '$1'); this.setMonth(m); return result;},
+		Z: function() { return -this.getTimezoneOffset() * 60; },
+		// Full Date/Time
+		c: function() { return this.format("Y-m-d\\TH:i:sP"); }, // Fixed now
+		r: function() { return this.toString(); },
+		U: function() { return this.getTime() / 1000; }
+	};
+}
+
+function get_lang_key(module, lang_file)
+{
+	var lang_key;
+	var siteUrl = site_url('system/get_language_key');
+	$.ajax({
+		url: siteUrl,
+		type: "POST",
+		data: 	{
+					'get_lang_key' : 'get_lang_key',
+					'module' : module,
+					'lang_file' : lang_file,
+				},
+		async: false,
+		dataType: "json",
+		success: function (data){
+			lang_key = data;
+		}
+	});
+
+	return lang_key;
+
+}
+
+function generate_tabs(selector)
+{
+	var selector = selector || '';
+
+	if(selector !== '')
+	{
+		// fixed jquery ui tab with <base> tag ajax issue.
+		$.fn.__tabs = $.fn.tabs;
+		$.fn.tabs = function (a, b, c, d, e, f) {
+			var base = window.location.href.replace(/#.*$/, '');
+			$('ul>li>a[href^="#"]', this).each(function () {
+				var href = $(this).attr('href');
+				$(this).attr('href', base + href);
+			});
+			$(this).__tabs(a, b, c, d, e, f);
+		};
+
+		$(selector).tabs({
+			activate: function( event, ui ) {
+				var index = ui.newPanel.attr('id').split('-').pop();
+				sessionStorage.setItem('tabs-index',index);
+			},
+			show: {
+				effect: "fade", duration: 100
+			}
+		});
+	}
+}
+
+/*	description : get the url segment value, similar like codeigniter $this->uri->segment(num);
+ *	how to use  : get_segment( num [, value for FALSE ])
+ *
+ *					parameter 1 : the num of segment.
+ */
+
+function get_segment(num)
+{
+	urlpath = window.location.pathname; // return pathname of url
+	num		= num || false;				// num of segment
+	host 	= window.location.hostname; // return host name ( domain name )
+
+	if(num !== false)
+	{
+		if(host == 'localhost')
+			segementPath = urlpath.split('/').slice(3);
+		else
+			segementPath = urlpath.split('/').slice(2);
+
+
+		// -1 for index and null value. console to see segementPath
+		if(segementPath[num-1] == undefined)
+			result='';
+		else
+			result=segementPath[num-1];
+
+	}
+	else
+		result='';
+
+	//20190305 nick added this to remove passing in ? which could be cross site scripting
+	result = result.split('?')[0];
+
+	// console.log(result); // uncomment this to see the result;
+	return result;
+}
+
+/* function to save page hits url using Ajax */
+function log_page_hit() {
+	pathname = window.location.pathname;
+	siteUrl = site_url('system/log_hit');
+	pageTitle = $(document).attr('title');
+
+	$.ajax({
+		url: siteUrl,
+		type: "POST",
+		data: 	{
+			'action' : 'log_page_hit',
+			'path' : pathname,
+			'title' : pageTitle
+		},
+		//async: false, /* Modified by George on 20200318 bcos async:false will block the execution. Please get my permission if you want to change it. */
+		async: true, /* Set "async:true" for parallel processing for logging page hit */
+		success: function (data){
+		}
+	});
+}
+
+
+//edited by nick 20180315 (old function causes some javascript to now work/load on exit print preview)
+function printDiv(divName)
+{   	
+
+    //for public consultation hide the comment div
+    if(('#consultation_comment_block').length)
+        $('#consultation_comment_block, #social_share, #recaptcha_area').hide();
+	
+	var newHtml = document.getElementById(divName).innerHTML + "<div id=\"open_print\"></div>";				
+		
+		//var js_links = [];
+		
+		//add in css links to it
+		var css_links = [	"assets/modules/pages/css/pages.css",
+							"assets/shared/css/web.css",
+							"assets/shared/css/simplegrid.css",
+							"pahang/themes/admin/css/web.css",
+							"assets/modules/contents/styles/tab.css"];
+		
+		var css_string = '';
+	var frm = document.createElement("iframe"),
+		dbscss =document.createElement("div");
+	
+	for (i = 0; i < css_links.length; i++) { 
+		
+		//dbscss.setAttribute("href", base_url() + '' + css_links[i]);
+		
+		css_string += "<link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\""+base_url() + '' + css_links[i] +"\">";
+	}	
+	
+	// dbscss.setAttribute("rel", "stylesheet");
+	// dbscss.setAttribute("type", "text/css");
+	// dbscss.setAttribute("href", base_url() + "assets/modules/contents/styles/tab.css");
+	dbscss.innerHTML = css_string;
+	
+
+	frm.id = 'iframe';
+	frm.width = '100%';
+	document.body.appendChild(frm);
+	
+	var ifrm = document.getElementById('iframe');
+
+	ifrm.contentWindow.document.getElementsByTagName("head")[0].appendChild(dbscss);	
+	ifrm.contentWindow.document.body.innerHTML = newHtml; // set content into content
+	ifrm.contentWindow.focus();// focus on contentWindow is needed on some ie versions
+	
+	//change to loading status
+	//document.body.style.cursor = 'wait';
+
+	setTimeout(function(){ 
+		
+		ifrm.contentWindow.print();
+		//document.getElementsByTagName('body')[0].removeAttribute('style');
+		setTimeout(function(){ document.getElementById('iframe').remove();
+		},10);
+
+	},500);
+	
+	
+    //for public consultation hide the comment div
+    if(('#consultation_comment_block').length)
+        $('#consultation_comment_block, #social_share, #recaptcha_area').show();
+	
+	
+    // var originalContents = document.body.innerHTML;
+
+    // //for public consultation hide the comment div
+    // if(('#consultation_comment_block').length)
+        // $('#consultation_comment_block, #social_share, #recaptcha_area').hide();
+
+    // var printContents = document.getElementById(divName).innerHTML;
+    // document.body.innerHTML = printContents;
+	
+    // window.print();
+	// setTimeout(function(){document.body.innerHTML = originalContents;},10);
+}
