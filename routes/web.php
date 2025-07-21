@@ -19,10 +19,10 @@ use Illuminate\Support\Facades\Log;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', fn () => view('welcome'));
-Route::get('/force-logout', fn () => view('logout'));
-Route::get('/uitest', fn () => view('views.admin.dashboards.dashboard'));
-Route::get('/test', fn () => 'Route working!');
+Route::get('/', fn() => view('home'));
+Route::get('/force-logout', fn() => view('logout'));
+Route::get('/uitest', fn() => view('views.admin.dashboards.dashboard'));
+Route::get('/test', fn() => 'Route working!');
 Route::get('/kkm-test', [KKMVerifierController::class, 'checkGovClinic']);
 Route::get('admin/clinics/check-verification', [KKMVerifierController::class, 'checkGovClinic']);
 
@@ -60,7 +60,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/clinics/{id}/edit', [AdminController::class, 'editClinic'])->name('clinics.edit');
         Route::put('/clinics/{id}', [AdminController::class, 'updateClinic'])->name('clinics.update');
         Route::delete('/clinics/{id}', [AdminController::class, 'deleteClinic'])->name('clinics.delete');
-        
+
         //Route::get('/clinics/pending', [AdminController::class, 'pendingClinics'])->name('clinics.pending');
         Route::put('/clinics/{id}/approve', [AdminController::class, 'approveClinic'])->name('clinics.approve');
         Route::put('/clinics/{id}/reject', [AdminController::class, 'rejectClinic'])->name('clinics.reject');
@@ -118,7 +118,7 @@ Route::prefix('clinic')->name('clinic.')->group(function () {
     Route::get('/login', [ClinicController::class, 'showLogin'])->name('login');
     Route::post('/login', [ClinicController::class, 'login']);
     Route::post('/logout', [ClinicController::class, 'logout'])->name('logout');
-    
+
     Route::middleware(['auth:clinic'])->group(function () {
         Route::get('/dashboard', [ClinicQueueController::class, 'index'])->name('dashboard');
         Route::post('/queue/{queue}/next', [ClinicQueueController::class, 'nextPhase'])->name('queue.nextPhase');
