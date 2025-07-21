@@ -1,3 +1,4 @@
 <?php
 
-header("location: resources/view/welcome.blade.php" );
+
+header("location: routes/web.php" );
