@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Log;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', fn() => view('home'));
+Route::get('/', fn() => view('welcome'));
 Route::get('/force-logout', fn() => view('logout'));
 Route::get('/uitest', fn() => view('views.admin.dashboards.dashboard'));
 Route::get('/test', fn() => 'Route working!');
