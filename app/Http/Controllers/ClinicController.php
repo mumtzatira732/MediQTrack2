@@ -396,5 +396,41 @@ class ClinicController extends Controller
 
         return back()->with('success', 'Assigned: ' . implode(', ', $assigned));
     }
+
+    public function nearby(Request $request)
+{
+    $userLat = $request->user_lat;
+    $userLon = $request->user_lon;
+
+    if (!$userLat || !$userLon) {
+        return redirect()->back()->with('error', 'Location not available');
+    }
+
+    $clinics = Clinic::all()->filter(function ($clinic) use ($userLat, $userLon) {
+        $distance = $this->calculateDistance($userLat, $userLon, $clinic->latitude, $clinic->longitude);
+        return $distance <= 20; // Only clinics within 20km
+    });
+
+    return view('patient.home', [ // update view path if needed
+        'clinics' => $clinics,
+        'nowServing' => null,
+        'latestQueue' => null
+    ]);
+}
+
+private function calculateDistance($lat1, $lon1, $lat2, $lon2)
+{
+    $earthRadius = 6371; // KM
+    $dLat = deg2rad($lat2 - $lat1);
+    $dLon = deg2rad($lon2 - $lon1);
+
+    $a = sin($dLat/2) * sin($dLat/2) +
+         cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+         sin($dLon/2) * sin($dLon/2);
+
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+    return $earthRadius * $c;
+}
+
 }
 
