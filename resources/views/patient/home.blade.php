@@ -111,14 +111,44 @@
 document.addEventListener('DOMContentLoaded', function () {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
-            document.getElementById('user_lat').value = position.coords.latitude;
-            document.getElementById('user_lon').value = position.coords.longitude;
-            document.getElementById('locationForm').submit();
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            // Panggil route clinics.nearby
+            fetch(`/clinics/nearby?lat=${lat}&lng=${lon}`)
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('clinic_id');
+                    select.innerHTML = ''; // Kosongkan dropdown
+
+                    if (data.length === 0) {
+                        const opt = document.createElement('option');
+                        opt.text = 'No nearby clinics found';
+                        opt.disabled = true;
+                        select.add(opt);
+                        return;
+                    }
+
+                    const defaultOpt = document.createElement('option');
+                    defaultOpt.text = '-- Select Clinic --';
+                    defaultOpt.value = '';
+                    select.add(defaultOpt);
+
+                    data.forEach(clinic => {
+                        const opt = document.createElement('option');
+                        opt.value = clinic.clinic_id;
+                        opt.text = `${clinic.clinic_name} (${clinic.distance} km)`;
+                        select.add(opt);
+                    });
+                });
         }, function(error) {
             console.error("Location error: ", error.message);
         });
+    } else {
+        console.warn("Geolocation not supported");
     }
 });
 </script>
+
 
 @endsection

@@ -399,24 +399,21 @@ class ClinicController extends Controller
 
     public function nearby(Request $request)
 {
-    $userLat = $request->user_lat;
-    $userLon = $request->user_lon;
+    $lat = $request->lat;
+    $lng = $request->lng;
 
-    if (!$userLat || !$userLon) {
-        return redirect()->back()->with('error', 'Location not available');
-    }
+    $clinics = Clinic::select('*')
+        ->selectRaw("(6371 * acos(cos(radians(?)) * cos(radians(latitude)) 
+                        * cos(radians(longitude) - radians(?)) 
+                        + sin(radians(?)) * sin(radians(latitude)))) AS distance",
+                        [$lat, $lng, $lat])
+        ->having('distance', '<=', 20)
+        ->orderBy('distance')
+        ->get();
 
-    $clinics = Clinic::all()->filter(function ($clinic) use ($userLat, $userLon) {
-        $distance = $this->calculateDistance($userLat, $userLon, $clinic->latitude, $clinic->longitude);
-        return $distance <= 20; // Only clinics within 20km
-    });
-
-    return view('patient.home', [ // update view path if needed
-        'clinics' => $clinics,
-        'nowServing' => null,
-        'latestQueue' => null
-    ]);
+    return response()->json($clinics);
 }
+
 
 private function calculateDistance($lat1, $lon1, $lat2, $lon2)
 {

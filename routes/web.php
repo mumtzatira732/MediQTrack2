@@ -89,7 +89,8 @@ Route::prefix('patient')->name('patient.')->group(function () {
     Route::get('/verify-otp/{id}', [PatientController::class, 'showOtpForm'])->name('otp.form');
     Route::post('/verify-otp/{id}', [PatientController::class, 'verifyOtp'])->name('verify-otp.submit');
 
-    Route::post('/get-nearby-clinics', [App\Http\Controllers\PatientController::class, 'getNearbyClinics'])->name('getNearbyClinics');
+    Route::get('/clinics/nearby', [App\Http\Controllers\ClinicController::class, 'nearby'])->name('clinics.nearby');
+
 
 
     // Protected routes
